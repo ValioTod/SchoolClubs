@@ -3,6 +3,16 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Scripts
+commit_script.ps1
+git_out.txt
+_check.ps1
+
+# Database files
+*.db
+*.mdf
+*.ldf
+
 # User-specific files
 *.rsuser
 *.suo

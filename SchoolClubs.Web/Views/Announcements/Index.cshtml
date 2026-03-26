@@ -1,0 +1,55 @@
+@model List<SchoolClubs.Web.Models.Announcement>
+@{
+    ViewData["Title"] = "Обяви";
+    var club = ViewBag.Club as SchoolClubs.Web.Models.Club;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Details" asp-route-id="@club?.Id">@club?.Name</a></li>
+        <li class="breadcrumb-item active" data-i18n="ann.title">Обяви</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between mb-3">
+    <h3 data-i18n="ann.title">Обяви</h3>
+    <a asp-action="Create" asp-route-clubId="@club?.Id" class="btn btn-info btn-sm">
+        <i class="bi bi-megaphone"></i> <span data-i18n="ann.new">Нова обява</span>
+    </a>
+</div>
+
+@foreach (var ann in Model)
+{
+    <div class="card mb-3 @(ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent ? "border-danger" : ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.High ? "border-warning" : "")">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    @if (ann.IsPinned)
+                    {
+                        <i class="bi bi-pin-fill text-primary"></i>
+                    }
+                    @if (ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent)
+                    {
+                        <span class="badge bg-danger" data-i18n="ann.urgent">Спешно</span>
+                    }
+                    else if (ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.High)
+                    {
+                        <span class="badge bg-warning text-dark" data-i18n="ann.important">Важно</span>
+                    }
+                    <h5 class="d-inline">@ann.Title</h5>
+                </div>
+                <small class="text-muted">@ann.PostedOn.ToString("dd.MM.yyyy HH:mm")</small>
+            </div>
+            <p class="mt-2 mb-1">@ann.Content</p>
+            <small class="text-muted">от @ann.Author.FullName</small>
+        </div>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-megaphone display-3"></i>
+        <p class="mt-2" data-i18n="ann.none">Няма обяви за този клуб.</p>
+    </div>
+}

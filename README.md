@@ -1,136 +1,128 @@
-# School Club Site Documentation
+# SchoolClubs
 
-## Overview
-A web application for viewing and managing school clubs.  Students can browse available clubs, view club details, and join clubs of interest.
+Уеб приложение за управление на училищни клубове, изградено с ASP.NET Core 8.0 MVC.
 
-## Features
+## Технологии
 
-### User Roles
-- **Student**: Can view clubs and join/leave clubs
-- **Club Admin**: Can manage club information and members
-- **Site Admin**: Can manage all clubs and users
+- **ASP.NET Core 8.0 MVC**
+- **Entity Framework Core 8.0** с SQLite
+- **ASP.NET Core Identity** за автентикация и авторизация
+- **Bootstrap 5.3** за UI
+- **xUnit + Moq** за тестване
 
-### Core Features
-- Browse all active clubs
-- View club details (description, meeting times, members)
-- Join/leave clubs
-- Search and filter clubs by category
-- View club member lists
-- Club contact information
+## Функционалности
 
-## Project Structure
+### Управление на клубове
+- Разглеждане, търсене и филтриране по категория
+- Създаване, редактиране на клубове (Admin/Teacher)
+- Записване / напускане на клуб
+- Лимит на членове
+
+### Събития с присъствие
+- Създаване на събития към клуб
+- Записване за събитие (RSVP) с лимит на участници
+- Отбелязване на присъствие с код (QR check-in)
+- Преглед на предстоящи и минали събития
+
+### Система за награди (Achievements)
+- Автоматично присъждане на бадж-ове при достигане на условия
+- Видове: брой клубове, посетени събития, дни членство, обяви, снимки
+- Точкова система с натрупване
+
+### Препоръчване на клубове
+- Анализира категориите на текущите клубове на потребителя
+- Предлага нови клубове от същите или сходни категории
+- За нови потребители показва най-популярните
+
+### Класация (Leaderboard)
+- Топ ученици по натрупани точки
+- Профилна страница с награди и статистики
+- Ранг в общата класация
+
+### Обяви
+- Публикуване на обяви с приоритет (нисък, нормален, висок, спешен)
+- Закачване на важни обяви в началото
+- Автор и дата на публикуване
+
+### Галерия
+- Качване на снимки към клуб
+- Валидация на формат и размер (макс. 5MB)
+- Описание на снимките
+
+### Табло (Dashboard)
+- Общи статистики
+- Моите клубове и предстоящи събития
+- Последни обяви и награди
+- Препоръчани клубове
+
+## Роли
+
+| Роля | Права |
+|------|-------|
+| Student | Разглеждане, записване, участие в събития |
+| Teacher | Създаване и управление на клубове |
+| Admin | Пълен достъп до всички функционалности |
+
+## Структура на проекта
+
 ```
-school-club-site/
-├── frontend/
-│   ├── pages/
-│   │   ├── clubs. html
-│   │   ├── club-detail.html
-│   │   └── dashboard.html
-│   ├── styles/
-│   │   └── main.css
-│   └── scripts/
-│       └── app.js
-├── backend/
-│   ├── routes/
-│   │   ├── clubs.js
-│   │   └── users.js
-│   ├── models/
-│   │   ├── Club.js
-│   │   └── User.js
-│   └── server.js
-└── database/
-    └── schema.sql
+SchoolClubs/
+├── SchoolClubs.sln
+├── SchoolClubs.Web/
+│   ├── Controllers/
+│   │   ├── HomeController.cs
+│   │   ├── ClubsController.cs
+│   │   ├── EventsController.cs
+│   │   ├── AnnouncementsController.cs
+│   │   ├── GalleryController.cs
+│   │   └── ProfileController.cs
+│   ├── Models/
+│   │   ├── ApplicationUser.cs
+│   │   ├── Club.cs
+│   │   ├── ClubMembership.cs
+│   │   ├── Event.cs
+│   │   ├── EventAttendance.cs
+│   │   ├── Announcement.cs
+│   │   ├── Achievement.cs
+│   │   ├── UserAchievement.cs
+│   │   ├── GalleryPhoto.cs
+│   │   └── ViewModels/
+│   ├── Data/
+│   │   ├── AppDbContext.cs
+│   │   └── SeedData.cs
+│   ├── Services/
+│   │   ├── ClubRecommendationService.cs
+│   │   └── AchievementService.cs
+│   ├── Views/
+│   │   ├── Home/
+│   │   ├── Clubs/
+│   │   ├── Events/
+│   │   ├── Announcements/
+│   │   ├── Gallery/
+│   │   ├── Profile/
+│   │   └── Shared/
+│   └── wwwroot/
+│       ├── css/site.css
+│       └── js/site.js
+└── SchoolClubs.Tests/
+    ├── ClubRecommendationServiceTests.cs
+    ├── AchievementServiceTests.cs
+    └── ClubsControllerTests.cs
 ```
 
-## Data Models
+## Стартиране
 
-### Club
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "description": "string",
-  "category": "string",
-  "meeting_time": "string",
-  "location": "string",
-  "admin_id": "uuid",
-  "members": ["user_id"],
-  "created_at": "timestamp"
-}
-```
-
-### User
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "email": "string",
-  "role": "student|admin",
-  "joined_clubs": ["club_id"],
-  "created_at": "timestamp"
-}
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/clubs` | Get all clubs |
-| GET | `/api/clubs/:id` | Get club details |
-| POST | `/api/clubs` | Create new club |
-| PUT | `/api/clubs/:id` | Update club |
-| DELETE | `/api/clubs/:id` | Delete club |
-| POST | `/api/clubs/:id/join` | Join a club |
-| POST | `/api/clubs/:id/leave` | Leave a club |
-| GET | `/api/users/:id/clubs` | Get user's clubs |
-
-## Getting Started
-
-### Prerequisites
-- Node.js 14+
-- PostgreSQL or MongoDB
-- npm or yarn
-
-### Installation
 ```bash
-# Clone repository
-git clone <repo-url>
-
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env
-
-# Run database migrations
-npm run migrate
-
-# Start server
-npm start
+cd SchoolClubs.Web
+dotnet restore
+dotnet ef database update
+dotnet run
 ```
 
-## Usage
+## Тестови акаунти
 
-1. **View Clubs**: Navigate to `/clubs` to browse all clubs
-2. **Club Details**: Click a club card to see full details
-3. **Join Club**: Click "Join" button on club page
-4. **Manage Club**: Admins can edit club info in settings
-
-## Status
-🚧 **Work in Progress**
-- [ ] Authentication system
-- [ ] Club creation interface
-- [ ] Member management dashboard
-- [ ] Email notifications
-- [ ] Search functionality
-
-## Next Steps
-- Set up database schema
-- Build API endpoints
-- Create frontend components
-- Implement authentication
-- Add user testing
-
----
-*Last Updated: 2025-11-27*
-*Project Status: Early Development*
+| Email | Парола | Роля |
+|-------|--------|------|
+| admin@schoolclubs.bg | Admin123! | Admin |
+| ivan.petrov@school.bg | Student123! | Student |
+| maria.ivanova@school.bg | Student123! | Student |

@@ -1,0 +1,76 @@
+@model List<SchoolClubs.Web.Models.Event>
+@{
+    ViewData["Title"] = "Събития";
+}
+
+<h2 class="mb-4" data-i18n="events.title">Събития</h2>
+
+@{
+    var upcoming = Model.Where(e => e.StartDate > DateTime.UtcNow).ToList();
+    var past = Model.Where(e => e.StartDate <= DateTime.UtcNow).ToList();
+}
+
+@if (upcoming.Any())
+{
+    <h5 class="text-success"><i class="bi bi-calendar-check"></i> <span data-i18n="events.upcoming">Предстоящи</span></h5>
+    <div class="row mb-4">
+        @foreach (var ev in upcoming)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 border-success">
+                    <div class="card-body">
+                        <span class="badge bg-success mb-2">@ev.Club.Name</span>
+                        <h5 class="card-title">@ev.Title</h5>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-calendar"></i> @ev.StartDate.ToString("dd.MM.yyyy HH:mm")
+                        </p>
+                        @if (ev.Location != null)
+                        {
+                            <p class="text-muted mb-1"><i class="bi bi-geo-alt"></i> @ev.Location</p>
+                        }
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small>
+                                <i class="bi bi-people"></i> @ev.Attendees.Count
+                                @if (ev.MaxAttendees > 0)
+                                {
+                                    <span>/ @ev.MaxAttendees</span>
+                                }
+                            </small>
+                            <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-sm btn-outline-success" data-i18n="events.view">Виж</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (past.Any())
+{
+    <h5 class="text-muted"><i class="bi bi-clock-history"></i> <span data-i18n="events.past">Минали</span></h5>
+    <div class="row">
+        @foreach (var ev in past.Take(6))
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100 opacity-75">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">@ev.Club.Name</span>
+                        <h5 class="card-title">@ev.Title</h5>
+                        <p class="text-muted mb-1">
+                            <i class="bi bi-calendar"></i> @ev.StartDate.ToString("dd.MM.yyyy")
+                        </p>
+                        <a asp-action="Details" asp-route-id="@ev.Id" class="btn btn-sm btn-outline-secondary" data-i18n="events.view">Виж</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5">
+        <i class="bi bi-calendar-x display-1 text-muted"></i>
+        <p class="text-muted mt-3" data-i18n="events.noevents">Няма налични събития.</p>
+    </div>
+}

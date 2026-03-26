@@ -1,0 +1,61 @@
+@model SchoolClubs.Web.Models.ViewModels.ClubCreateViewModel
+@{
+    ViewData["Title"] = "Нов клуб";
+}
+
+<h2 data-i18n="clubs.createtitle">Създаване на нов клуб</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" class="form-select">
+                        <option>Технологии</option>
+                        <option>Хуманитарни</option>
+                        <option>Изкуство</option>
+                        <option>Спорт</option>
+                        <option>Природа</option>
+                        <option>Друго</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MaxMembers" class="form-label"></label>
+                    <input asp-for="MaxMembers" class="form-control" type="number" />
+                    <span asp-validation-for="MaxMembers" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MeetingSchedule" class="form-label"></label>
+                <input asp-for="MeetingSchedule" class="form-control" placeholder="напр. Вторник 15:00-17:00" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MeetingLocation" class="form-label"></label>
+                <input asp-for="MeetingLocation" class="form-control" placeholder="напр. Кабинет 301" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-plus-lg"></i> <span data-i18n="clubs.createbtn">Създай</span>
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2" data-i18n="clubs.back">Назад</a>
+        </form>
+    </div>
+</div>

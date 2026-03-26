@@ -1,0 +1,175 @@
+@model SchoolClubs.Web.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Табло";
+}
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <i class="bi bi-people text-primary fs-2"></i>
+                <h4>@Model.TotalClubs</h4>
+                <small class="text-muted" data-i18n="dash.clubs">Клуба</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <i class="bi bi-calendar-event text-success fs-2"></i>
+                <h4>@Model.UpcomingEventsCount</h4>
+                <small class="text-muted" data-i18n="dash.upcoming">Предстоящи събития</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <i class="bi bi-trophy text-warning fs-2"></i>
+                <h4>@Model.MyPoints</h4>
+                <small class="text-muted" data-i18n="dash.mypoints">Моите точки</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center stat-card">
+            <div class="card-body">
+                <i class="bi bi-bar-chart text-danger fs-2"></i>
+                <h4>#@(Model.MyRank > 0 ? Model.MyRank : "-")</h4>
+                <small class="text-muted" data-i18n="dash.myrank">Моя ранг</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <h4 class="mb-3" data-i18n="dash.myclubs">Моите клубове</h4>
+        @if (Model.MyClubs.Any())
+        {
+            <div class="row mb-4">
+                @foreach (var club in Model.MyClubs)
+                {
+                    <div class="col-md-6 mb-3">
+                        <div class="card club-card h-100">
+                            <div class="card-body">
+                                <span class="badge bg-secondary">@club.Category</span>
+                                <h6 class="mt-2">@club.Name</h6>
+                                <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="btn btn-sm btn-outline-primary mt-2" data-i18n="dash.open">Отвори</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <span data-i18n="dash.noclubs">Все още не сте член на нито един клуб.</span> <a asp-controller="Clubs" asp-action="Index" data-i18n="dash.browselink">Разгледайте наличните.</a>
+            </div>
+        }
+
+        <h4 class="mb-3" data-i18n="dash.upcomingevents">Предстоящи събития</h4>
+        @if (Model.UpcomingEvents.Any())
+        {
+            <div class="list-group mb-4">
+                @foreach (var ev in Model.UpcomingEvents)
+                {
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h6 class="mb-1">@ev.Title</h6>
+                                <small class="text-muted">@ev.Club.Name</small>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> @ev.StartDate.ToString("dd.MM.yyyy HH:mm")
+                            </small>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+
+        <h4 class="mb-3" data-i18n="dash.announcements">Последни обяви</h4>
+        @if (Model.RecentAnnouncements.Any())
+        {
+            @foreach (var ann in Model.RecentAnnouncements)
+            {
+                <div class="card mb-2 @(ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent ? "border-danger" : ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.High ? "border-warning" : "")">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between">
+                            <strong>@ann.Title</strong>
+                            <small class="text-muted">@ann.PostedOn.ToString("dd.MM")</small>
+                        </div>
+                        <small>@ann.Club.Name &bull; @ann.Author.FullName</small>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="col-lg-4">
+        @if (Model.RecentAchievements.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-award"></i> <span data-i18n="dash.awards">Последни награди</span>
+                </div>
+                <div class="card-body">
+                    @foreach (var ua in Model.RecentAchievements)
+                    {
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <div>
+                                <strong>@ua.Achievement.Name</strong><br />
+                                <small class="text-muted">@ua.Achievement.Description</small>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.RecommendedClubs.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-lightbulb"></i> <span data-i18n="dash.recommended">Препоръчани за теб</span>
+                </div>
+                <div class="card-body">
+                    @foreach (var club in Model.RecommendedClubs)
+                    {
+                        <div class="mb-3">
+                            <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="text-decoration-none">
+                                <strong>@club.Name</strong>
+                            </a>
+                            <br />
+                            <span class="badge bg-light text-dark">@club.Category</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.TopMembers.Any())
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-trophy"></i> <span data-i18n="dash.top5">Топ 5 класация</span>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        @foreach (var entry in Model.TopMembers.Take(5))
+                        {
+                            <tr>
+                                <td class="ps-3"><strong>#@entry.Rank</strong></td>
+                                <td>@entry.FullName</td>
+                                <td class="text-end pe-3">@entry.TotalPoints т.</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>

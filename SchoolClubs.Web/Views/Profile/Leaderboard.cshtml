@@ -1,0 +1,62 @@
+@model List<SchoolClubs.Web.Models.ViewModels.LeaderboardEntry>
+@{
+    ViewData["Title"] = "Класация";
+}
+
+<h2 class="mb-4"><i class="bi bi-trophy"></i> <span data-i18n="lb.title">Класация</span></h2>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th width="60">#</th>
+                    <th data-i18n="lb.student">Ученик</th>
+                    <th class="text-center" data-i18n="lb.awards">Награди</th>
+                    <th class="text-end" data-i18n="lb.points">Точки</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entry in Model)
+                {
+                    <tr class="@(entry.Rank <= 3 ? "table-warning" : "")">
+                        <td>
+                            @if (entry.Rank == 1)
+                            {
+                                <i class="bi bi-trophy-fill text-warning fs-4"></i>
+                            }
+                            else if (entry.Rank == 2)
+                            {
+                                <i class="bi bi-trophy-fill text-secondary fs-5"></i>
+                            }
+                            else if (entry.Rank == 3)
+                            {
+                                <i class="bi bi-trophy-fill" style="color: #cd7f32; font-size: 1.1rem"></i>
+                            }
+                            else
+                            {
+                                <span class="fw-bold">@entry.Rank</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@entry.UserId" class="text-decoration-none">
+                                @entry.FullName
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-info">@entry.AchievementCount</span>
+                        </td>
+                        <td class="text-end fw-bold">@entry.TotalPoints</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <p data-i18n="lb.noranked">Все още няма класирани ученици.</p>
+    </div>
+}

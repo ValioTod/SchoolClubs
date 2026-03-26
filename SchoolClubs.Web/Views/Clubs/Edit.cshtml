@@ -1,0 +1,68 @@
+@model SchoolClubs.Web.Models.ViewModels.ClubEditViewModel
+@{
+    ViewData["Title"] = "Редактиране на клуб";
+}
+
+<h2>Редактиране: @Model.Name</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="Category" class="form-label"></label>
+                    <select asp-for="Category" class="form-select">
+                        <option>Технологии</option>
+                        <option>Хуманитарни</option>
+                        <option>Изкуство</option>
+                        <option>Спорт</option>
+                        <option>Природа</option>
+                        <option>Друго</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="MaxMembers" class="form-label"></label>
+                    <input asp-for="MaxMembers" class="form-control" type="number" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Статус</label>
+                    <div class="form-check form-switch mt-2">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsActive" class="form-check-label">Активен</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MeetingSchedule" class="form-label"></label>
+                <input asp-for="MeetingSchedule" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MeetingLocation" class="form-label"></label>
+                <input asp-for="MeetingLocation" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg"></i> <span data-i18n="clubs.save">Запази</span>
+            </button>
+            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary ms-2" data-i18n="clubs.cancel">Отказ</a>
+        </form>
+    </div>
+</div>

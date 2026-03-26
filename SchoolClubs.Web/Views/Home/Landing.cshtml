@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Училищни клубове";
+    var clubs = ViewBag.FeaturedClubs as List<SchoolClubs.Web.Models.Club>;
+    int totalClubs = ViewBag.TotalClubs;
+    int totalStudents = ViewBag.TotalStudents;
+    int totalEvents = ViewBag.TotalEvents;
+}
+
+<div class="hero-section text-center py-5 mb-4">
+    <h1 class="display-4 fw-bold" data-i18n="landing.title">Открий своя клуб</h1>
+    <p class="lead text-muted" data-i18n="landing.subtitle">Разгледай училищните клубове, запиши се и участвай в събития</p>
+    <div class="mt-4">
+        <a asp-controller="Clubs" asp-action="Index" class="btn btn-primary btn-lg me-2">
+            <i class="bi bi-search"></i> <span data-i18n="landing.browse">Разгледай клубовете</span>
+        </a>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg">
+            <span data-i18n="landing.register">Регистрация</span>
+        </a>
+    </div>
+</div>
+
+<div class="row text-center mb-5">
+    <div class="col-md-4">
+        <div class="stat-card p-4">
+            <i class="bi bi-people-fill display-4 text-primary"></i>
+            <h2 class="mt-2">@totalClubs</h2>
+            <p class="text-muted" data-i18n="landing.active">Активни клуба</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4">
+            <i class="bi bi-person-check-fill display-4 text-success"></i>
+            <h2 class="mt-2">@totalStudents</h2>
+            <p class="text-muted" data-i18n="landing.students">Регистрирани ученици</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4">
+            <i class="bi bi-calendar-event-fill display-4 text-warning"></i>
+            <h2 class="mt-2">@totalEvents</h2>
+            <p class="text-muted" data-i18n="landing.events">Събития</p>
+        </div>
+    </div>
+</div>
+
+@if (clubs?.Any() == true)
+{
+    <h3 class="mb-3" data-i18n="landing.popular">Популярни клубове</h3>
+    <div class="row">
+        @foreach (var club in clubs)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card club-card h-100">
+                    <div class="card-body">
+                        <span class="badge bg-secondary mb-2">@club.Category</span>
+                        <h5 class="card-title">@club.Name</h5>
+                        <p class="card-text text-muted">@(club.Description.Length > 120 ? club.Description[..120] + "..." : club.Description)</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="bi bi-people"></i> @club.Members.Count / @club.MaxMembers
+                            </small>
+                            <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="btn btn-sm btn-outline-primary">
+                                <span data-i18n="landing.viewmore">Виж повече</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,107 @@
+@model SchoolClubs.Web.Models.ViewModels.ClubStatisticsViewModel
+@{
+    ViewData["Title"] = "Club Statistics - " + Model.Club.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Details" asp-route-id="@Model.Club.Id">@Model.Club.Name</a></li>
+        <li class="breadcrumb-item active">Statistics</li>
+    </ol>
+</nav>
+
+<h2><i class="bi bi-graph-up"></i> @Model.Club.Name — Statistics</h2>
+
+<div class="row mt-4 mb-4">
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-primary">
+            <div class="card-body">
+                <i class="bi bi-people text-primary fs-3"></i>
+                <h4>@Model.TotalMembers</h4>
+                <small class="text-muted">Members</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-success">
+            <div class="card-body">
+                <i class="bi bi-calendar-event text-success fs-3"></i>
+                <h4>@Model.TotalEvents</h4>
+                <small class="text-muted">Events</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-info">
+            <div class="card-body">
+                <i class="bi bi-megaphone text-info fs-3"></i>
+                <h4>@Model.TotalAnnouncements</h4>
+                <small class="text-muted">Announcements</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-warning">
+            <div class="card-body">
+                <i class="bi bi-images text-warning fs-3"></i>
+                <h4>@Model.TotalPhotos</h4>
+                <small class="text-muted">Photos</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-secondary">
+            <div class="card-body">
+                <i class="bi bi-check2-circle text-secondary fs-3"></i>
+                <h4>@Model.TotalAttendances</h4>
+                <small class="text-muted">Check-ins</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-danger">
+            <div class="card-body">
+                <i class="bi bi-percent text-danger fs-3"></i>
+                <h4>@Model.AverageAttendanceRate%</h4>
+                <small class="text-muted">Avg. Attendance</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.MostActiveUser != null)
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5><i class="bi bi-star-fill text-warning"></i> Most Active Member</h5>
+            <div class="d-flex align-items-center mt-2">
+                @if (Model.MostActiveUser.ProfilePicturePath != null)
+                {
+                    <img src="@Model.MostActiveUser.ProfilePicturePath" class="rounded-circle me-3" width="50" height="50" style="object-fit:cover" />
+                }
+                else
+                {
+                    <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center me-3" style="width:50px;height:50px">
+                        <span class="text-white fs-5">@Model.MostActiveUser.FullName[0]</span>
+                    </div>
+                }
+                <div>
+                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@Model.MostActiveUser.Id" class="text-decoration-none">
+                        <strong>@Model.MostActiveUser.FullName</strong>
+                    </a>
+                    <br />
+                    <span class="badge bg-primary">@Model.MostActiveUserPoints pts</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="d-flex gap-2">
+    <a asp-controller="Clubs" asp-action="Details" asp-route-id="@Model.Club.Id" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-left"></i> Back to Club
+    </a>
+    <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-secondary">
+        <i class="bi bi-download"></i> Export Members CSV
+    </a>
+</div>

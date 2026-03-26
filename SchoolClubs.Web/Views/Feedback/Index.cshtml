@@ -1,0 +1,50 @@
+@model List<SchoolClubs.Web.Models.Feedback>
+@{
+    ViewData["Title"] = "My Feedback";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-chat-dots"></i> <span data-i18n="fb.title">My Feedback</span></h2>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> <span data-i18n="fb.new">New Feedback</span>
+    </a>
+</div>
+
+@if (Model.Any())
+{
+    @foreach (var fb in Model)
+    {
+        <div class="card mb-3 @(!fb.IsResolved ? "border-warning" : "border-success")">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <span class="badge bg-secondary">@fb.Category</span>
+                        <h5 class="d-inline ms-2">@fb.Subject</h5>
+                    </div>
+                    <div>
+                        <span class="badge @(fb.IsResolved ? "bg-success" : "bg-warning text-dark")">
+                            @(fb.IsResolved ? "Resolved" : "Pending")
+                        </span>
+                        <small class="text-muted ms-2">@fb.SubmittedOn.ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
+                </div>
+                <p class="mt-2 mb-1">@fb.Message</p>
+                @if (fb.IsResolved && fb.AdminResponse != null)
+                {
+                    <div class="mt-2 p-3 bg-light rounded border">
+                        <strong><i class="bi bi-reply"></i> Admin Response:</strong>
+                        <p class="mb-0 mt-1">@fb.AdminResponse</p>
+                        <small class="text-muted">@fb.RespondedOn?.ToString("dd.MM.yyyy HH:mm")</small>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-chat-dots display-3"></i>
+        <p class="mt-2" data-i18n="fb.none">No feedback submitted yet.</p>
+    </div>
+}

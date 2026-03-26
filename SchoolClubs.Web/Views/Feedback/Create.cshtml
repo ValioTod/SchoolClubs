@@ -1,0 +1,39 @@
+@model SchoolClubs.Web.Models.ViewModels.FeedbackCreateViewModel
+@{
+    ViewData["Title"] = "Submit Feedback";
+}
+
+<h3><i class="bi bi-chat-dots"></i> <span data-i18n="fb.createtitle">Submit Feedback</span></h3>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Subject" class="form-label"></label>
+                <input asp-for="Subject" class="form-control" />
+                <span asp-validation-for="Subject" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Category" class="form-label"></label>
+                <select asp-for="Category" class="form-select"
+                        asp-items="Html.GetEnumSelectList<SchoolClubs.Web.Models.FeedbackCategory>()">
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Message" class="form-label"></label>
+                <textarea asp-for="Message" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Message" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-send"></i> <span data-i18n="fb.submit">Submit</span>
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2" data-i18n="clubs.back">Back</a>
+        </form>
+    </div>
+</div>

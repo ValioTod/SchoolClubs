@@ -1,0 +1,233 @@
+@model SchoolClubs.Web.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h2><i class="bi bi-gear-fill text-warning"></i> <span data-i18n="admin.title">Admin Panel</span></h2>
+
+<div class="row mb-4 mt-3">
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-primary">
+            <div class="card-body">
+                <i class="bi bi-people text-primary fs-3"></i>
+                <h4>@Model.TotalUsers</h4>
+                <small class="text-muted">Users</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-success">
+            <div class="card-body">
+                <i class="bi bi-collection text-success fs-3"></i>
+                <h4>@Model.TotalClubs</h4>
+                <small class="text-muted">Clubs</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-info">
+            <div class="card-body">
+                <i class="bi bi-calendar-event text-info fs-3"></i>
+                <h4>@Model.TotalEvents</h4>
+                <small class="text-muted">Events</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-secondary">
+            <div class="card-body">
+                <i class="bi bi-megaphone text-secondary fs-3"></i>
+                <h4>@Model.TotalAnnouncements</h4>
+                <small class="text-muted">Announcements</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-warning">
+            <div class="card-body">
+                <i class="bi bi-chat-dots text-warning fs-3"></i>
+                <h4>@Model.TotalFeedbacks</h4>
+                <small class="text-muted">Feedback</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-center stat-card border-danger">
+            <div class="card-body">
+                <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
+                <h4>@Model.UnresolvedFeedbacks</h4>
+                <small class="text-muted">Unresolved</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between">
+                <span><i class="bi bi-collection"></i> All Clubs</span>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Club</th>
+                            <th>Leader</th>
+                            <th>Members</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var club in Model.AllClubs)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="text-decoration-none">
+                                        @club.Name
+                                    </a>
+                                </td>
+                                <td><small>@(club.Leader?.FullName ?? "—")</small></td>
+                                <td>@club.Members.Count / @club.MaxMembers</td>
+                                <td>
+                                    @if (club.IsActive)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="ToggleClub" asp-route-id="@club.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm @(club.IsActive ? "btn-outline-warning" : "btn-outline-success")" title="Toggle">
+                                            <i class="bi @(club.IsActive ? "bi-pause-fill" : "bi-play-fill")"></i>
+                                        </button>
+                                    </form>
+                                    <form asp-action="DeleteClub" asp-route-id="@club.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this club permanently?')">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                    <a asp-controller="Profile" asp-action="Statistics" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-info" title="Stats">
+                                        <i class="bi bi-graph-up"></i>
+                                    </a>
+                                    <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-secondary" title="Export CSV">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-people"></i> Recent Users
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model.RecentUsers)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@user.Id" class="text-decoration-none">
+                                        @user.FullName
+                                    </a>
+                                </td>
+                                <td><small>@user.Email</small></td>
+                                <td><small>@user.DateJoined.ToString("dd.MM.yyyy")</small></td>
+                                <td>
+                                    <div class="dropdown d-inline">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Role</button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Student" />
+                                                    <button type="submit" class="dropdown-item">Student</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Teacher" />
+                                                    <button type="submit" class="dropdown-item">Teacher</button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form asp-action="ChangeUserRole" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <input type="hidden" name="role" value="Admin" />
+                                                    <button type="submit" class="dropdown-item">Admin</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        @if (Model.RecentFeedbacks.Any())
+        {
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-chat-dots"></i> Recent Feedback
+                </div>
+                <div class="card-body">
+                    @foreach (var fb in Model.RecentFeedbacks)
+                    {
+                        <div class="mb-3 p-2 border rounded @(!fb.IsResolved ? "border-warning" : "")">
+                            <div class="d-flex justify-content-between">
+                                <strong>@fb.Subject</strong>
+                                <span class="badge @(fb.IsResolved ? "bg-success" : "bg-warning text-dark")">
+                                    @(fb.IsResolved ? "Resolved" : "Pending")
+                                </span>
+                            </div>
+                            <small class="text-muted">@fb.Author.FullName — @fb.SubmittedOn.ToString("dd.MM.yyyy")</small>
+                            <p class="mb-1 small">@fb.Message</p>
+                            @if (!fb.IsResolved)
+                            {
+                                <form asp-action="ResolveFeedback" asp-route-id="@fb.Id" method="post" class="d-flex gap-2">
+                                    @Html.AntiForgeryToken()
+                                    <input type="text" name="response" class="form-control form-control-sm" placeholder="Response (optional)..." />
+                                    <button type="submit" class="btn btn-sm btn-success">Resolve</button>
+                                </form>
+                            }
+                            else if (fb.AdminResponse != null)
+                            {
+                                <div class="mt-1 p-2 bg-light rounded">
+                                    <small><strong>Response:</strong> @fb.AdminResponse</small>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

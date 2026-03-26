@@ -1,0 +1,64 @@
+@model List<SchoolClubs.Web.Models.GalleryPhoto>
+@{
+    ViewData["Title"] = "Галерия";
+    var club = ViewBag.Club as SchoolClubs.Web.Models.Club;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Details" asp-route-id="@club?.Id">@club?.Name</a></li>
+        <li class="breadcrumb-item active" data-i18n="gallery.title">Галерия</li>
+    </ol>
+</nav>
+
+<h3 class="mb-3">Галерия - @club?.Name</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form asp-action="Upload" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="clubId" value="@club?.Id" />
+            <div class="row align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label" data-i18n="gallery.photo">Снимка</label>
+                    <input type="file" name="photo" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" required />
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label" data-i18n="gallery.desc">Описание</label>
+                    <input type="text" name="caption" class="form-control" placeholder="Кратко описание..." data-i18n-placeholder="gallery.captionph" />
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-warning w-100">
+                        <i class="bi bi-upload"></i> <span data-i18n="gallery.upload">Качи</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    @foreach (var photo in Model)
+    {
+        <div class="col-md-3 col-sm-4 col-6 mb-3">
+            <div class="card gallery-card">
+                <img src="@photo.FilePath" class="card-img-top" alt="@photo.Caption" style="height: 200px; object-fit: cover;" />
+                <div class="card-body py-2">
+                    @if (photo.Caption != null)
+                    {
+                        <small>@photo.Caption</small><br />
+                    }
+                    <small class="text-muted">@photo.UploadedBy.FullName &bull; @photo.UploadedOn.ToString("dd.MM")</small>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-images display-3"></i>
+        <p class="mt-2" data-i18n="gallery.none">Все още няма снимки. Бъдете първият!</p>
+    </div>
+}

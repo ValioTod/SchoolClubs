@@ -1,0 +1,186 @@
+@model SchoolClubs.Web.Models.ViewModels.ClubDetailsViewModel
+@{
+    ViewData["Title"] = Model.Club.Name;
+}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Index" data-i18n="clubs.title">Клубове</a></li>
+        <li class="breadcrumb-item active">@Model.Club.Name</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h2>@Model.Club.Name</h2>
+                <span class="badge bg-secondary fs-6">@Model.Club.Category</span>
+            </div>
+            <div>
+                @if (Model.IsLeader || User.IsInRole("Admin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Club.Id" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-pencil"></i> <span data-i18n="clubs.edit">Редактирай</span>
+                    </a>
+                    <a asp-controller="Profile" asp-action="Statistics" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-info btn-sm ms-1">
+                        <i class="bi bi-graph-up"></i> <span data-i18n="clubs.stats">Статистика</span>
+                    </a>
+                    <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-secondary btn-sm ms-1">
+                        <i class="bi bi-download"></i> CSV
+                    </a>
+                }
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <p>@Model.Club.Description</p>
+                @if (Model.Club.MeetingSchedule != null)
+                {
+                    <p><i class="bi bi-clock"></i> <strong data-i18n="clubs.schedule">График:</strong> @Model.Club.MeetingSchedule</p>
+                }
+                @if (Model.Club.MeetingLocation != null)
+                {
+                    <p><i class="bi bi-geo-alt"></i> <strong data-i18n="clubs.location">Място:</strong> @Model.Club.MeetingLocation</p>
+                }
+                @if (Model.Club.Leader != null)
+                {
+                    <p><i class="bi bi-person-badge"></i> <strong data-i18n="clubs.leader">Ръководител:</strong> @Model.Club.Leader.FullName</p>
+                }
+            </div>
+        </div>
+
+        @if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <div class="mb-4">
+                @if (Model.IsMember)
+                {
+                    <form asp-action="Leave" asp-route-id="@Model.Club.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Сигурни ли сте?')">
+                            <i class="bi bi-box-arrow-right"></i> <span data-i18n="clubs.leave">Напусни клуба</span>
+                        </button>
+                    </form>
+                }
+                else if (Model.MemberCount < Model.Club.MaxMembers)
+                {
+                    <form asp-action="Join" asp-route-id="@Model.Club.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> <span data-i18n="clubs.join">Запиши се</span>
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" disabled data-i18n="clubs.full">Клубът е пълен</button>
+                }
+            </div>
+        }
+
+        @if (Model.UpcomingEvents.Any())
+        {
+            <h4 data-i18n="clubs.upcomingevents">Предстоящи събития</h4>
+            <div class="list-group mb-4">
+                @foreach (var ev in Model.UpcomingEvents)
+                {
+                    <a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-0">@ev.Title</h6>
+                            <small>@ev.StartDate.ToString("dd.MM.yyyy HH:mm")</small>
+                        </div>
+                        @if (ev.Location != null)
+                        {
+                            <small class="text-muted"><i class="bi bi-geo-alt"></i> @ev.Location</small>
+                        }
+                    </a>
+                }
+            </div>
+        }
+
+        @if (Model.IsLeader || Model.IsMember)
+        {
+            <div class="d-flex gap-2 mb-4">
+                <a asp-controller="Events" asp-action="Create" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-calendar-plus"></i> <span data-i18n="clubs.newevent">Ново събитие</span>
+                </a>
+                <a asp-controller="Announcements" asp-action="Create" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-info btn-sm">
+                    <i class="bi bi-megaphone"></i> <span data-i18n="clubs.newannouncement">Нова обява</span>
+                </a>
+                <a asp-controller="Gallery" asp-action="Index" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-images"></i> <span data-i18n="clubs.gallery">Галерия</span>
+                </a>
+            </div>
+        }
+
+        @if (Model.RecentAnnouncements.Any())
+        {
+            <h4 data-i18n="clubs.recentann">Последни обяви</h4>
+            @foreach (var ann in Model.RecentAnnouncements)
+            {
+                <div class="card mb-2 @(ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent ? "border-danger" : "")">
+                    <div class="card-body py-2">
+                        @if (ann.IsPinned)
+                        {
+                            <i class="bi bi-pin-fill text-primary"></i>
+                        }
+                        <strong>@ann.Title</strong>
+                        <p class="mb-1 small">@ann.Content</p>
+                        <small class="text-muted">@ann.PostedOn.ToString("dd.MM.yyyy")</small>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-people"></i> <span data-i18n="clubs.members">Членове</span> (@Model.MemberCount / @Model.Club.MaxMembers)
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    @foreach (var member in Model.Club.Members.OrderByDescending(m => m.Role))
+                    {
+                        <li class="list-group-item d-flex justify-content-between">
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@member.UserId" class="text-decoration-none">
+                                @member.User.FullName
+                            </a>
+                            @if (member.Role == SchoolClubs.Web.Models.MemberRole.President)
+                            {
+                                <span class="badge bg-warning text-dark" data-i18n="clubs.president">Председател</span>
+                            }
+                            else if (member.Role == SchoolClubs.Web.Models.MemberRole.Moderator)
+                            {
+                                <span class="badge bg-info" data-i18n="clubs.moderator">Модератор</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        @if (Model.RecentPhotos.Any())
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <i class="bi bi-images"></i> <span data-i18n="clubs.photos">Снимки</span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-1">
+                        @foreach (var photo in Model.RecentPhotos.Take(6))
+                        {
+                            <div class="col-4">
+                                <img src="@photo.FilePath" class="img-fluid rounded" alt="@photo.Caption" />
+                            </div>
+                        }
+                    </div>
+                    <a asp-controller="Gallery" asp-action="Index" asp-route-clubId="@Model.Club.Id" class="btn btn-sm btn-link mt-2" data-i18n="clubs.viewall">
+                        Виж всички
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
