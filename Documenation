@@ -1,136 +1,625 @@
-# School Club Site Documentation
+# SchoolClubs — Full Technical Documentation
 
-## Overview
-A web application for viewing and managing school clubs.  Students can browse available clubs, view club details, and join clubs of interest.
+## 1. Overview
 
-## Features
+SchoolClubs is a web application for managing school clubs built with **ASP.NET Core 8.0 MVC**. It allows students to browse clubs, join them, attend events, earn achievements, and compete on a leaderboard. Teachers and administrators can create/manage clubs, events, announcements, and view analytics.
 
-### User Roles
-- **Student**: Can view clubs and join/leave clubs
-- **Club Admin**: Can manage club information and members
-- **Site Admin**: Can manage all clubs and users
-
-### Core Features
-- Browse all active clubs
-- View club details (description, meeting times, members)
-- Join/leave clubs
-- Search and filter clubs by category
-- View club member lists
-- Club contact information
-
-## Project Structure
-```
-school-club-site/
-├── frontend/
-│   ├── pages/
-│   │   ├── clubs. html
-│   │   ├── club-detail.html
-│   │   └── dashboard.html
-│   ├── styles/
-│   │   └── main.css
-│   └── scripts/
-│       └── app.js
-├── backend/
-│   ├── routes/
-│   │   ├── clubs.js
-│   │   └── users.js
-│   ├── models/
-│   │   ├── Club.js
-│   │   └── User.js
-│   └── server.js
-└── database/
-    └── schema.sql
-```
-
-## Data Models
-
-### Club
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "description": "string",
-  "category": "string",
-  "meeting_time": "string",
-  "location": "string",
-  "admin_id": "uuid",
-  "members": ["user_id"],
-  "created_at": "timestamp"
-}
-```
-
-### User
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "email": "string",
-  "role": "student|admin",
-  "joined_clubs": ["club_id"],
-  "created_at": "timestamp"
-}
-```
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/clubs` | Get all clubs |
-| GET | `/api/clubs/:id` | Get club details |
-| POST | `/api/clubs` | Create new club |
-| PUT | `/api/clubs/:id` | Update club |
-| DELETE | `/api/clubs/:id` | Delete club |
-| POST | `/api/clubs/:id/join` | Join a club |
-| POST | `/api/clubs/:id/leave` | Leave a club |
-| GET | `/api/users/:id/clubs` | Get user's clubs |
-
-## Getting Started
-
-### Prerequisites
-- Node.js 14+
-- PostgreSQL or MongoDB
-- npm or yarn
-
-### Installation
-```bash
-# Clone repository
-git clone <repo-url>
-
-# Install dependencies
-npm install
-
-# Set up environment variables
-cp .env.example .env
-
-# Run database migrations
-npm run migrate
-
-# Start server
-npm start
-```
-
-## Usage
-
-1. **View Clubs**: Navigate to `/clubs` to browse all clubs
-2. **Club Details**: Click a club card to see full details
-3. **Join Club**: Click "Join" button on club page
-4. **Manage Club**: Admins can edit club info in settings
-
-## Status
-🚧 **Work in Progress**
-- [ ] Authentication system
-- [ ] Club creation interface
-- [ ] Member management dashboard
-- [ ] Email notifications
-- [ ] Search functionality
-
-## Next Steps
-- Set up database schema
-- Build API endpoints
-- Create frontend components
-- Implement authentication
-- Add user testing
+The application features a bilingual interface (Bulgarian / English), a dark/light theme toggle, role-based access control via ASP.NET Core Identity, and automatic database seeding — making it fully portable across machines with no migrations required.
 
 ---
-*Last Updated: 2025-11-27*
-*Project Status: Early Development*
+
+## 2. Technology Stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Framework | ASP.NET Core MVC | 8.0 |
+| ORM | Entity Framework Core | 8.0 |
+| Database | SQL Server LocalDB | (localdb)\MSSQLLocalDB |
+| Authentication | ASP.NET Core Identity | 8.0 |
+| Frontend | Bootstrap + Bootstrap Icons | 5.3.2 / 1.11.2 |
+| Testing | xUnit + Moq + EF InMemory | 2.6.2 / 4.20.70 / 8.0.0 |
+| Language | C# 12 / .NET 8.0 | — |
+
+**NuGet Packages (Web project):**
+- `Microsoft.AspNetCore.Identity.EntityFrameworkCore` 8.0.0
+- `Microsoft.AspNetCore.Identity.UI` 8.0.0
+- `Microsoft.EntityFrameworkCore.SqlServer` 8.0.0
+- `Microsoft.EntityFrameworkCore.Tools` 8.0.0
+- `Microsoft.EntityFrameworkCore.Design` 8.0.0
+
+**NuGet Packages (Test project):**
+- `Microsoft.NET.Test.Sdk` 17.8.0
+- `xunit` 2.6.2
+- `xunit.runner.visualstudio` 2.5.4
+- `Moq` 4.20.70
+- `Microsoft.EntityFrameworkCore.InMemory` 8.0.0
+
+---
+
+## 3. Project Structure
+
+```
+SchoolClubs/
+├── SchoolClubs.sln                         # Solution file
+├── README.md                               # Project readme
+├── Documenation                            # This documentation file
+├── .gitignore
+│
+├── SchoolClubs.Web/                        # Main web application
+│   ├── Program.cs                          # Application entry point & DI setup
+│   ├── appsettings.json                    # Connection string & config
+│   ├── SchoolClubs.Web.csproj              # Project file with NuGet references
+│   │
+│   ├── Controllers/
+│   │   ├── HomeController.cs               # Landing page & authenticated dashboard
+│   │   ├── ClubsController.cs              # CRUD for clubs, join/leave, search
+│   │   ├── EventsController.cs             # CRUD for events, RSVP, attendance, cancel/restore
+│   │   ├── AnnouncementsController.cs      # Club announcements
+│   │   ├── GalleryController.cs            # Photo upload & gallery
+│   │   ├── ProfileController.cs            # User profile, edit, stats, CSV export, leaderboard
+│   │   ├── AdminController.cs              # Admin dashboard, user role management, feedback
+│   │   └── FeedbackController.cs           # User feedback submission & history
+│   │
+│   ├── Models/
+│   │   ├── ApplicationUser.cs              # Extended IdentityUser (FullName, Grade, Bio, etc.)
+│   │   ├── Club.cs                         # Club entity with leader, members, events
+│   │   ├── ClubMembership.cs               # Many-to-many: User ↔ Club (with role)
+│   │   ├── Event.cs                        # Event entity (date, location, attendance code)
+│   │   ├── EventAttendance.cs              # Many-to-many: User ↔ Event (RSVP + check-in)
+│   │   ├── Announcement.cs                 # Announcements with priority levels
+│   │   ├── Achievement.cs                  # Achievement definitions (type, threshold, points)
+│   │   ├── UserAchievement.cs              # Many-to-many: User ↔ Achievement (earned)
+│   │   ├── GalleryPhoto.cs                 # Photo uploads with caption
+│   │   ├── Feedback.cs                     # User feedback with categories & admin response
+│   │   └── ViewModels/
+│   │       ├── ClubViewModels.cs           # ClubCreateVM, ClubEditVM, ClubDetailsVM, ClubListVM
+│   │       ├── EventViewModels.cs          # EventCreateVM, EventDetailsVM
+│   │       └── DashboardViewModels.cs      # DashboardVM, ProfileVM, ProfileEditVM, AdminDashboardVM,
+│   │                                       #   LeaderboardEntry, AnnouncementCreateVM,
+│   │                                       #   FeedbackCreateVM, ClubStatisticsVM
+│   │
+│   ├── Data/
+│   │   ├── AppDbContext.cs                 # EF DbContext with Fluent API relationships
+│   │   └── SeedData.cs                     # Auto-seeding: roles, users, clubs, events, achievements
+│   │
+│   ├── Services/
+│   │   ├── AchievementService.cs           # Checks criteria & awards badges, leaderboard queries
+│   │   └── ClubRecommendationService.cs    # Category-based club recommendations
+│   │
+│   ├── Views/
+│   │   ├── _ViewImports.cshtml             # Tag helper imports
+│   │   ├── _ViewStart.cshtml               # Default layout reference
+│   │   ├── Shared/
+│   │   │   ├── _Layout.cshtml              # Main layout (navbar, footer, theme/language toggles)
+│   │   │   ├── _LoginPartial.cshtml        # Identity login/register/logout partial
+│   │   │   └── Error.cshtml                # Error page
+│   │   ├── Home/
+│   │   │   ├── Landing.cshtml              # Public landing page with stats & featured clubs
+│   │   │   └── Dashboard.cshtml            # Authenticated user dashboard
+│   │   ├── Clubs/
+│   │   │   ├── Index.cshtml                # Club list with search & category filter
+│   │   │   ├── Details.cshtml              # Club details, members, events, announcements
+│   │   │   ├── Create.cshtml               # Create club form
+│   │   │   └── Edit.cshtml                 # Edit club form
+│   │   ├── Events/
+│   │   │   ├── Index.cshtml                # All events (upcoming + past)
+│   │   │   ├── Details.cshtml              # Event details, RSVP, check-in, cancel/restore
+│   │   │   └── Create.cshtml               # Create event form
+│   │   ├── Announcements/
+│   │   │   ├── Index.cshtml                # Club announcements list
+│   │   │   └── Create.cshtml               # Create announcement form
+│   │   ├── Gallery/
+│   │   │   └── Index.cshtml                # Photo gallery with upload form
+│   │   ├── Profile/
+│   │   │   ├── Index.cshtml                # User profile (clubs, achievements, points)
+│   │   │   ├── Edit.cshtml                 # Edit profile (name, grade, bio, picture)
+│   │   │   ├── Leaderboard.cshtml          # Top students ranking table
+│   │   │   └── Statistics.cshtml           # Club statistics dashboard
+│   │   ├── Admin/
+│   │   │   └── Index.cshtml                # Admin panel (users, clubs, feedback)
+│   │   └── Feedback/
+│   │       ├── Index.cshtml                # User's feedback list with status
+│   │       └── Create.cshtml               # Submit feedback form
+│   │
+│   └── wwwroot/
+│       ├── css/site.css                    # Custom CSS: light/dark themes, card styles
+│       └── js/site.js                      # JS: theme toggle, language i18n, auto-dismiss alerts
+│
+└── SchoolClubs.Tests/                      # Unit test project
+    ├── SchoolClubs.Tests.csproj
+    ├── AchievementServiceTests.cs          # 5 tests for achievement logic
+    ├── ClubRecommendationServiceTests.cs   # 5 tests for recommendation logic
+    └── ClubsControllerTests.cs             # 4 tests for clubs controller
+```
+
+---
+
+## 4. User Roles & Permissions
+
+| Feature | Student | Teacher | Admin |
+|---------|:-------:|:-------:|:-----:|
+| Browse/search clubs | ✓ | ✓ | ✓ |
+| Join/leave clubs | ✓ | ✓ | ✓ |
+| RSVP to events | ✓ | ✓ | ✓ |
+| Check in with attendance code | ✓ | ✓ | ✓ |
+| View profile & leaderboard | ✓ | ✓ | ✓ |
+| Edit own profile | ✓ | ✓ | ✓ |
+| Submit feedback | ✓ | ✓ | ✓ |
+| Upload gallery photos | ✓ | ✓ | ✓ |
+| Create clubs | — | ✓ | ✓ |
+| Edit own clubs | — | ✓ | ✓ |
+| Create events (as club leader) | ✓ | ✓ | ✓ |
+| Cancel/restore events | — | — | ✓ |
+| Create announcements | ✓* | ✓ | ✓ |
+| Admin dashboard | — | — | ✓ |
+| Toggle/delete clubs | — | — | ✓ |
+| Change user roles | — | — | ✓ |
+| Resolve feedback | — | — | ✓ |
+| Export members CSV | ✓** | ✓ | ✓ |
+| View club statistics | ✓** | ✓ | ✓ |
+
+*\* Club leaders (President role within a club)*
+*\*\* Club leaders and admins only*
+
+---
+
+## 5. Data Models
+
+### 5.1 ApplicationUser (extends IdentityUser)
+
+| Property | Type | Description |
+|----------|------|-------------|
+| FullName | string (100) | User's full name |
+| Grade | int | School grade (1-12) |
+| GradeSection | string (10) | Class section (e.g. "А", "B") |
+| Bio | string? | User biography |
+| ProfilePicturePath | string? | Path to profile picture |
+| DateJoined | DateTime | Registration date |
+| Memberships | ICollection | Club memberships |
+| EventAttendances | ICollection | Event RSVPs |
+| Achievements | ICollection | Earned achievements |
+
+### 5.2 Club
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| Name | string (150) | Club name |
+| Description | string | Club description |
+| Category | string (50) | Category (Technology, Art, Sports, etc.) |
+| MeetingSchedule | string? | When the club meets |
+| MeetingLocation | string? | Where the club meets |
+| MaxMembers | int | Maximum member count (default: 30) |
+| IsActive | bool | Whether the club is active |
+| CreatedOn | DateTime | Creation date |
+| LeaderId | string? | FK to ApplicationUser (club leader) |
+| Members | ICollection | Club memberships |
+| Events | ICollection | Club events |
+| Announcements | ICollection | Club announcements |
+| Photos | ICollection | Gallery photos |
+
+### 5.3 ClubMembership
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| UserId | string | FK to ApplicationUser |
+| ClubId | int | FK to Club |
+| JoinedOn | DateTime | Date joined |
+| Role | MemberRole | Member / Moderator / President |
+
+**MemberRole enum:** Member (0), Moderator (1), President (2)
+
+### 5.4 Event
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| Title | string (200) | Event title |
+| Description | string? | Event description |
+| StartDate | DateTime | Event start |
+| EndDate | DateTime? | Event end |
+| Location | string? (150) | Event location |
+| MaxAttendees | int | Max participants (0 = unlimited) |
+| IsCancelled | bool | Whether event is cancelled |
+| AttendanceCode | string? | Code for check-in verification |
+| ClubId | int | FK to Club |
+
+### 5.5 EventAttendance
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| UserId | string | FK to ApplicationUser |
+| EventId | int | FK to Event |
+| SignedUpOn | DateTime | RSVP date |
+| HasAttended | bool | Confirmed attendance |
+| CheckedInAt | DateTime? | Check-in timestamp |
+
+### 5.6 Announcement
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| Title | string (250) | Announcement title |
+| Content | string | Announcement body |
+| Priority | AnnouncementPriority | Low / Normal / High / Urgent |
+| PostedOn | DateTime | Publication date |
+| IsPinned | bool | Pinned to top |
+| ClubId | int | FK to Club |
+| AuthorId | string | FK to ApplicationUser |
+
+**AnnouncementPriority enum:** Low (0), Normal (1), High (2), Urgent (3)
+
+### 5.7 Achievement
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| Name | string (100) | Achievement name |
+| Description | string? (300) | Achievement description |
+| IconPath | string? | Badge icon path |
+| Type | AchievementType | Criteria type |
+| Threshold | int | Value required to earn |
+| PointsAwarded | int | Points granted (default: 10) |
+
+**AchievementType enum:** EventsAttended (0), ClubsJoined (1), DaysAsMember (2), AnnouncementsMade (3), PhotosUploaded (4)
+
+### 5.8 UserAchievement
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| UserId | string | FK to ApplicationUser |
+| AchievementId | int | FK to Achievement |
+| EarnedOn | DateTime | Date earned |
+
+### 5.9 GalleryPhoto
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| FilePath | string | Stored file path |
+| Caption | string? (200) | Photo caption |
+| UploadedOn | DateTime | Upload date |
+| ClubId | int | FK to Club |
+| UploadedById | string | FK to ApplicationUser |
+
+### 5.10 Feedback
+
+| Property | Type | Description |
+|----------|------|-------------|
+| Id | int | Primary key |
+| Subject | string (200) | Feedback subject |
+| Message | string | Feedback body |
+| Category | FeedbackCategory | Category type |
+| IsResolved | bool | Whether admin has resolved it |
+| SubmittedOn | DateTime | Submission date |
+| AuthorId | string | FK to ApplicationUser |
+| AdminResponse | string? | Admin's reply |
+| RespondedOn | DateTime? | Response date |
+
+**FeedbackCategory enum:** General (0), Bug (1), Feature (2), ClubRelated (3), EventRelated (4)
+
+---
+
+## 6. Entity Relationships (Fluent API)
+
+```
+ApplicationUser ─< ClubMembership >─ Club
+ApplicationUser ─< EventAttendance >─ Event
+ApplicationUser ─< UserAchievement >─ Achievement
+Club             ─< Event
+Club             ─< Announcement
+Club             ─< GalleryPhoto
+ApplicationUser ─< Feedback
+ApplicationUser ─< Announcement (Author, NoAction on delete)
+ApplicationUser ─< GalleryPhoto (UploadedBy, NoAction on delete)
+Club             ─  ApplicationUser (Leader, SetNull on delete)
+```
+
+**Unique constraints:**
+- ClubMembership: (UserId, ClubId)
+- EventAttendance: (UserId, EventId)
+- UserAchievement: (UserId, AchievementId)
+
+---
+
+## 7. Features in Detail
+
+### 7.1 Club Management
+- **Browse:** Card grid view with search by name and filter by category
+- **Details:** Full info with members list, upcoming events, recent announcements, gallery preview
+- **Create/Edit:** Form with validation (Admin/Teacher only); category dropdown with Bulgarian labels
+- **Join/Leave:** Members can join (if below max) and leave clubs; leader cannot leave
+- **Activate/Deactivate:** Admin can toggle club active status from admin panel
+
+### 7.2 Events System
+- **Create:** Club leaders can create events with date, location, and max attendees
+- **RSVP:** Members sign up; capacity is enforced (0 = unlimited)
+- **Check-in:** Attendance code verification — type the code to confirm attendance
+- **Cancel / Restore:** Admin and club leaders can cancel or restore events
+- **History:** Events split into "Upcoming" (green border) and "Past" (muted) sections
+
+### 7.3 Achievement System (Gamification)
+Achievements are checked and awarded automatically when users perform actions:
+
+| Achievement | Criteria | Points |
+|-------------|----------|--------|
+| First Steps | Join 1 club | 10 |
+| Social Butterfly | Join 3 clubs | 25 |
+| Activist | Attend 5 events | 30 |
+| Event Fan | Attend 10 events | 50 |
+| Veteran | 90+ days in a club | 40 |
+| Voice of the People | Publish 5 announcements | 20 |
+| Photographer | Upload 10 photos | 35 |
+
+The `AchievementService` checks all criteria types (ClubsJoined, EventsAttended, DaysAsMember, AnnouncementsMade, PhotosUploaded) and awards badges once the threshold is met. Duplicate awards are prevented by a unique index.
+
+### 7.4 Club Recommendation Engine
+The `ClubRecommendationService` analyzes the user's current club categories and recommends similar clubs they haven't joined. For new users with no memberships, it returns the most popular (by member count) clubs. Results exclude inactive clubs and clubs the user already belongs to.
+
+### 7.5 Leaderboard
+A ranking system based on accumulated achievement points. Displayed as a table with rank badges (gold/silver/bronze for top 3). Each user's profile shows their total points and rank.
+
+### 7.6 Announcements
+Club-level announcements with four priority levels: Low, Normal, High, Urgent. Urgent announcements get a red border, High gets yellow. Announcements can be pinned to appear at the top.
+
+### 7.7 Photo Gallery
+Club members can upload photos (validated for file type and size ≤ 5MB). Photos are stored in `wwwroot/uploads/gallery/` and displayed in a responsive grid with captions. Uploading photos contributes toward the "Photographer" achievement.
+
+### 7.8 User Profile
+- **View:** Shows full name, grade, bio, profile picture, club memberships, achievements, total points, rank
+- **Edit:** Change name, grade, section, bio, and upload a new profile picture
+- **Own vs. Others:** "Edit Profile" button shown only on own profile
+
+### 7.9 Admin Panel (Admin role only)
+- **Dashboard stats:** Total users, clubs, events, announcements, feedbacks
+- **Club management:** Toggle active/inactive, delete clubs
+- **User management:** Change roles via dropdown (Student / Teacher / Admin)
+- **Feedback resolution:** View, respond to, and mark feedback as resolved
+
+### 7.10 Feedback System
+Any authenticated user can submit feedback with a subject, message, and category (General, Bug, Feature, Club Related, Event Related). Users can view their own feedback history with status badges (Pending / Resolved). Admins can respond and resolve feedback from the admin panel.
+
+### 7.11 Club Statistics
+Available to club leaders and admins on the club details page. Shows:
+- Total members, events, announcements, photos, attendances
+- Average attendance rate across all events
+- Most active user (by attendance count)
+
+### 7.12 CSV Export
+Club leaders and admins can export the member list of any club as a CSV file (Full Name, Email, Grade, Section, Joined On, Role).
+
+### 7.13 Bilingual UI (Bulgarian / English)
+JavaScript-based i18n system using `data-i18n` attributes. A language toggle button in the navbar switches between BG and EN. The selected language is persisted in `localStorage`. Over 100 translation keys cover all page elements.
+
+### 7.14 Dark / Light Theme
+A theme toggle button switches between light and dark modes. The theme is stored in `localStorage` and applied via the `data-theme` attribute on `<html>`. CSS variables define colors for both themes including cards, forms, tables, alerts, and breadcrumbs.
+
+---
+
+## 8. Database Configuration
+
+**Connection String** (appsettings.json):
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=SchoolClubsDB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+  }
+}
+```
+
+**Database initialization:** The application uses `EnsureCreatedAsync()` instead of EF migrations. On first run, the database is created automatically from the model and seeded with:
+- 3 roles: Admin, Teacher, Student
+- 1 admin user
+- 5 student users
+- 8 clubs across 5 categories
+- 3 events
+- 2 announcements
+- 7 achievements
+
+This approach makes the project **fully portable** — clone and run on any machine with SQL Server LocalDB installed. No migration files or manual database setup needed.
+
+---
+
+## 9. Seed Data (Default Accounts)
+
+| Email | Password | Role |
+|-------|----------|------|
+| admin@schoolclubs.bg | Admin123! | Admin |
+| ivan.petrov@school.bg | Student123! | Student |
+| maria.ivanova@school.bg | Student123! | Student |
+| georgi.dimitrov@school.bg | Student123! | Student |
+| elena.stoyanova@school.bg | Student123! | Student |
+| nikolay.kolev@school.bg | Student123! | Student |
+
+**Seeded clubs:** Programming Club, Debate Club, Photography and Video, Eco Club, Robotics, Theater Troupe, Chess Club, Creative Writing Club
+
+---
+
+## 10. Routes & Controller Actions
+
+### HomeController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/` | No | Landing page (guest) or Dashboard (authenticated) |
+| Error | GET | `/Home/Error` | No | Error page |
+
+### ClubsController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Clubs` | No | List all clubs with search/filter |
+| Details | GET | `/Clubs/Details/{id}` | No | Club details page |
+| Create | GET/POST | `/Clubs/Create` | Admin/Teacher | Create a new club |
+| Edit | GET/POST | `/Clubs/Edit/{id}` | Admin/Leader | Edit club details |
+| Join | POST | `/Clubs/Join` | Yes | Join a club |
+| Leave | POST | `/Clubs/Leave` | Yes | Leave a club |
+
+### EventsController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Events` | No | List all events |
+| Details | GET | `/Events/Details/{id}` | No | Event details |
+| Create | GET/POST | `/Events/Create` | Yes | Create event for a club |
+| SignUp | POST | `/Events/SignUp` | Yes | RSVP to an event |
+| CancelSignUp | POST | `/Events/CancelSignUp` | Yes | Cancel RSVP |
+| CheckIn | POST | `/Events/CheckIn` | Yes | Attendance check-in with code |
+| CancelEvent | POST | `/Events/CancelEvent` | Yes | Cancel an event |
+| RestoreEvent | POST | `/Events/RestoreEvent` | Yes | Restore a cancelled event |
+
+### AnnouncementsController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Announcements?clubId={id}` | Yes | Club announcements |
+| Create | GET/POST | `/Announcements/Create` | Yes | Post new announcement |
+
+### GalleryController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Gallery?clubId={id}` | Yes | Club photo gallery |
+| Upload | POST | `/Gallery/Upload` | Yes | Upload a photo |
+| Delete | POST | `/Gallery/Delete` | Yes | Delete a photo |
+
+### ProfileController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Profile/{id?}` | Yes | View user profile |
+| Edit | GET/POST | `/Profile/Edit` | Yes | Edit own profile |
+| Leaderboard | GET | `/Profile/Leaderboard` | Yes | Points ranking |
+| Statistics | GET | `/Profile/Statistics?clubId={id}` | Yes | Club statistics |
+| ExportMembers | GET | `/Profile/ExportMembers?clubId={id}` | Yes | CSV export |
+
+### AdminController (Admin role only)
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Admin` | Admin | Admin dashboard |
+| ToggleClub | POST | `/Admin/ToggleClub/{id}` | Admin | Activate/deactivate club |
+| DeleteClub | POST | `/Admin/DeleteClub/{id}` | Admin | Delete a club |
+| ResolveFeedback | POST | `/Admin/ResolveFeedback` | Admin | Respond to feedback |
+| ChangeUserRole | POST | `/Admin/ChangeUserRole` | Admin | Change user's role |
+
+### FeedbackController
+| Action | Method | Route | Auth | Description |
+|--------|--------|-------|------|-------------|
+| Index | GET | `/Feedback` | Yes | User's feedback list |
+| Create | GET/POST | `/Feedback/Create` | Yes | Submit new feedback |
+
+### Identity (Razor Pages)
+| Page | Route | Description |
+|------|-------|-------------|
+| Login | `/Identity/Account/Login` | Sign in |
+| Register | `/Identity/Account/Register` | Create account |
+| Logout | `/Identity/Account/Logout` | Sign out |
+
+---
+
+## 11. Services
+
+### AchievementService
+- `CheckAndAwardAchievements(userId)` — Evaluates all achievements against user's activity and awards unearned badges
+- `CheckCriteria(userId, achievement)` — Checks specific criteria: clubs joined, events attended, days as member, announcements made, photos uploaded
+- `GetTotalPoints(userId)` — Sums all points from user's earned achievements
+- `GetLeaderboard(count)` — Returns top N users by points with rank
+- `GetUserRank(userId)` — Returns the user's position in the leaderboard
+
+### ClubRecommendationService
+- `GetRecommendations(userId, count)` — Returns recommended clubs based on user's category preferences; falls back to popular clubs for new users
+
+---
+
+## 12. Unit Tests (14 tests)
+
+### AchievementServiceTests (5 tests)
+1. `CheckAndAward_ClubsJoined_AwardsWhenThresholdMet` — Awards badge when user joins enough clubs
+2. `CheckAndAward_DoesNotDuplicateAchievements` — Prevents awarding same achievement twice
+3. `CheckAndAward_EventsAttended_RequiresHasAttended` — Only counts confirmed attendance
+4. `GetTotalPoints_SumsCorrectly` — Verifies point calculation
+5. `GetLeaderboard_OrdersByPointsDescending` — Verifies ranking order
+
+### ClubRecommendationServiceTests (5 tests)
+1. `GetRecommendations_NoMemberships_ReturnsPopularClubs` — Returns popular clubs for new users
+2. `GetRecommendations_WithMemberships_ReturnsSameCategory` — Recommends same-category clubs
+3. `GetRecommendations_ExcludesJoinedClubs` — Doesn't recommend clubs user already joined
+4. `GetRecommendations_ExcludesInactiveClubs` — Filters out inactive clubs
+5. `GetRecommendations_FillsUpWithOtherCategories` — Falls back to other categories if needed
+
+### ClubsControllerTests (4 tests)
+1. `Index_ReturnsClubList` — Returns club listing
+2. `Index_FiltersByCategory` — Category filter works correctly
+3. `Details_ReturnsNotFound_WhenClubMissing` — 404 for missing club
+4. `Details_ReturnsClubInfo` — Returns correct club details
+
+---
+
+## 13. Frontend Architecture
+
+### Layout (_Layout.cshtml)
+- Responsive navbar with Bootstrap 5.3 (`navbar-expand-lg navbar-dark bg-primary sticky-top`)
+- Navigation links: Home, Clubs, Events, Leaderboard, Feedback, Admin (role-based)
+- Theme toggle (sun/moon icon) and Language toggle (BG/EN flag)
+- Login/Register or Profile/Logout (via _LoginPartial.cshtml)
+- Footer with copyright
+- TempData flash messages (Success / Error alerts with auto-dismiss)
+
+### JavaScript (site.js)
+- **Auto-dismiss alerts** after 5 seconds
+- **Category filter auto-submit** on change
+- **Confirmation dialogs** on leave/delete actions
+- **Dark/Light theme** persisted in `localStorage` as `sc-theme`
+- **i18n system**: 100+ keys in BG/EN, persisted as `sc-lang`, applies to all `[data-i18n]` elements
+
+### CSS (site.css)
+- CSS custom properties for theming (background, text, card, border colors)
+- Dark theme styles for: body, cards, forms, tables, alerts, breadcrumbs, badges
+- Clean separation via `[data-theme="dark"]` selector
+
+---
+
+## 14. Getting Started
+
+### Prerequisites
+- **.NET 8.0 SDK** — [download](https://dotnet.microsoft.com/download/dotnet/8.0)
+- **SQL Server LocalDB** — included with Visual Studio, or install via [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+
+### Installation & Run
+```bash
+# Clone the repository
+git clone https://github.com/ValioTod/SchoolClubs.git
+cd SchoolClubs
+
+# Switch to the working branch
+git checkout working-version
+
+# Run the application
+dotnet run --project SchoolClubs.Web
+
+# The app will be available at http://localhost:5000
+```
+
+The database is created and seeded automatically on first run. No migrations needed.
+
+### Running Tests
+```bash
+dotnet test
+```
+All 14 tests should pass.
+
+### Transferring to Another Machine
+1. Copy or clone the project folder
+2. Ensure .NET 8.0 SDK and SQL Server LocalDB are installed
+3. Run `dotnet run --project SchoolClubs.Web`
+4. The database is automatically created and seeded — no manual setup required
+
+---
+
+## 15. Security
+
+- **Authentication:** ASP.NET Core Identity with cookie-based authentication
+- **Authorization:** Role-based (`[Authorize(Roles = "Admin")]`) and claim-based checks
+- **Anti-forgery:** All POST forms include `@Html.AntiForgeryToken()` and controllers validate with `[ValidateAntiForgeryToken]`
+- **Password policy:** Min 6 chars, requires uppercase, lowercase, and digit; no non-alphanumeric required
+- **Input validation:** Data annotation attributes on all view models with server-side validation
+- **File upload security:** File type and size validation on gallery photo uploads (max 5MB)
+- **SQL injection prevention:** Entity Framework parameterized queries throughout
+- **XSS prevention:** Razor auto-encoding of all output

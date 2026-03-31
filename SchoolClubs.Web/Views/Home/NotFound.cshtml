@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Страницата не е намерена";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center py-5 reveal">
+    <i class="bi bi-search display-1 text-warning"></i>
+    <h1 class="display-4 fw-bold gradient-text mt-3">404</h1>
+    <h3 class="mt-2" data-i18n="error.notfound.title">Страницата не е намерена</h3>
+    <p class="text-muted mb-4" data-i18n="error.notfound.message">
+        Страницата, която търсите, не съществува или е била преместена.
+    </p>
+    <a href="/" class="btn btn-primary" data-i18n="error.home">
+        <i class="bi bi-house me-1"></i>Начало
+    </a>
+    <a href="/Clubs" class="btn btn-outline-primary ms-2" data-i18n="error.notfound.clubs">
+        <i class="bi bi-people me-1"></i>Клубове
+    </a>
+</div>

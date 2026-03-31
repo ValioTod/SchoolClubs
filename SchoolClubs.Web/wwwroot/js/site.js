@@ -1,15 +1,244 @@
 document.addEventListener('DOMContentLoaded', function () {
+    var html = document.documentElement;
 
-    // =============== Auto-dismiss alerts ===============
+    // --- Page loader ---
+    var pageLoader = document.getElementById('pageLoader');
+    if (pageLoader) {
+        setTimeout(function () { pageLoader.classList.add('hidden'); }, 300);
+        setTimeout(function () { if (pageLoader.parentNode) pageLoader.parentNode.removeChild(pageLoader); }, 700);
+    }
+
+    // --- Scroll Reveal (IntersectionObserver) ---
+    var revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+    if ('IntersectionObserver' in window && revealElements.length > 0) {
+        var revealObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(function (el) { revealObserver.observe(el); });
+    } else {
+        // Fallback: just show everything
+        revealElements.forEach(function (el) { el.classList.add('visible'); });
+    }
+
+    // --- Animated Counters ---
+    var counters = document.querySelectorAll('[data-counter]');
+    if ('IntersectionObserver' in window && counters.length > 0) {
+        var counterObserver = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        counters.forEach(function (el) { counterObserver.observe(el); });
+    }
+
+    function animateCounter(el) {
+        var target = parseInt(el.getAttribute('data-counter'), 10);
+        var prefix = el.getAttribute('data-counter-prefix') || '';
+        var suffix = el.getAttribute('data-counter-suffix') || '';
+        if (isNaN(target)) { return; }
+        var duration = 1500;
+        var start = 0;
+        var startTime = null;
+
+        function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+
+        function step(timestamp) {
+            if (!startTime) startTime = timestamp;
+            var progress = Math.min((timestamp - startTime) / duration, 1);
+            var current = Math.floor(easeOutCubic(progress) * target);
+            el.textContent = prefix + current + suffix;
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                el.textContent = prefix + target + suffix;
+            }
+        }
+        requestAnimationFrame(step);
+    }
+
+    // --- Navbar scroll effect ---
+    var navbar = document.querySelector('.navbar');
+    if (navbar) {
+        var lastScroll = 0;
+        window.addEventListener('scroll', function () {
+            var scrollY = window.scrollY || window.pageYOffset;
+            if (scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            lastScroll = scrollY;
+        }, { passive: true });
+    }
+
+    // --- Back to Top Button ---
+    var backToTopBtn = document.getElementById('backToTop');
+    if (backToTopBtn) {
+        window.addEventListener('scroll', function () {
+            if ((window.scrollY || window.pageYOffset) > 400) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        }, { passive: true });
+        backToTopBtn.addEventListener('click', function () {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    // --- Toast Notifications ---
+    // Convert standard alerts to toast notifications
     var alerts = document.querySelectorAll('.alert-dismissible');
     alerts.forEach(function (alert) {
-        setTimeout(function () {
-            var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-            bsAlert.close();
-        }, 5000);
+        // Get message text
+        var msg = alert.textContent.trim();
+        var isSuccess = alert.classList.contains('alert-success');
+        var isDanger = alert.classList.contains('alert-danger');
+        var isInfo = alert.classList.contains('alert-info');
+
+        // Remove the original alert
+        alert.style.display = 'none';
+
+        // Create toast
+        showToast(msg, isSuccess ? 'success' : isDanger ? 'error' : 'info');
     });
 
-    // =============== Category filter auto-submit ===============
+    function showToast(message, type) {
+        var container = document.querySelector('.toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+
+        var toast = document.createElement('div');
+        toast.className = 'toast toast-' + (type || 'info');
+
+        var icons = { success: 'bi-check-circle-fill', error: 'bi-exclamation-triangle-fill', info: 'bi-info-circle-fill' };
+        var colors = { success: '#10b981', error: '#ef4444', info: '#06b6d4' };
+
+        toast.innerHTML =
+            '<i class="bi ' + (icons[type] || icons.info) + '" style="color:' + (colors[type] || colors.info) + ';font-size:1.25rem"></i>' +
+            '<span style="flex:1;font-weight:500">' + escapeHtml(message) + '</span>' +
+            '<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:0 0 0 0.5rem;font-size:1.1rem"><i class="bi bi-x"></i></button>';
+
+        container.appendChild(toast);
+
+        // Auto dismiss
+        setTimeout(function () {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            toast.style.transition = 'all 0.3s ease-out';
+            setTimeout(function () { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+        }, 5000);
+    }
+
+    function escapeHtml(text) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(text));
+        return div.innerHTML;
+    }
+
+    // --- Ripple effect on buttons ---
+    document.querySelectorAll('.btn-primary, .btn-success, .btn-outline-primary').forEach(function (btn) {
+        btn.classList.add('ripple');
+        btn.addEventListener('click', function (e) {
+            var circle = document.createElement('span');
+            circle.className = 'ripple-circle';
+            var rect = this.getBoundingClientRect();
+            circle.style.left = (e.clientX - rect.left) + 'px';
+            circle.style.top = (e.clientY - rect.top) + 'px';
+            this.appendChild(circle);
+            setTimeout(function () { if (circle.parentNode) circle.parentNode.removeChild(circle); }, 600);
+        });
+    });
+
+    // --- Better confirm dialogs ---
+    function showConfirmModal(message, onConfirm) {
+        // Create backdrop
+        var backdrop = document.createElement('div');
+        backdrop.className = 'confirm-modal-backdrop';
+
+        // Create modal
+        var modal = document.createElement('div');
+        modal.className = 'confirm-modal';
+        modal.innerHTML =
+            '<div style="text-align:center;margin-bottom:1.5rem">' +
+            '<i class="bi bi-exclamation-triangle" style="font-size:3rem;color:var(--warning)"></i>' +
+            '</div>' +
+            '<p style="text-align:center;font-weight:600;font-size:1.05rem;margin-bottom:1.5rem">' + escapeHtml(message) + '</p>' +
+            '<div style="display:flex;gap:0.75rem;justify-content:center">' +
+            '<button class="btn btn-secondary confirm-no" style="min-width:100px">' +
+            (html.lang === 'en' ? 'Cancel' : 'Отказ') + '</button>' +
+            '<button class="btn btn-danger confirm-yes" style="min-width:100px">' +
+            (html.lang === 'en' ? 'Confirm' : 'Потвърди') + '</button>' +
+            '</div>';
+
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
+
+        // Animate in
+        requestAnimationFrame(function () {
+            backdrop.classList.add('show');
+            modal.classList.add('show');
+        });
+
+        function close() {
+            backdrop.classList.remove('show');
+            modal.classList.remove('show');
+            setTimeout(function () {
+                if (backdrop.parentNode) backdrop.parentNode.removeChild(backdrop);
+                if (modal.parentNode) modal.parentNode.removeChild(modal);
+            }, 300);
+        }
+
+        modal.querySelector('.confirm-no').addEventListener('click', close);
+        backdrop.addEventListener('click', close);
+        modal.querySelector('.confirm-yes').addEventListener('click', function () {
+            close();
+            onConfirm();
+        });
+    }
+
+    // Confirm on leave/delete - replace browser alerts
+    var leaveForms = document.querySelectorAll('form[action*="Leave"]');
+    leaveForms.forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var msg = html.lang === 'en'
+                ? 'Are you sure you want to leave the club?'
+                : 'Сигурни ли сте, че искате да напуснете клуба?';
+            var f = form;
+            showConfirmModal(msg, function () { f.submit(); });
+        });
+    });
+
+    var deleteForms = document.querySelectorAll('form[action*="Delete"]');
+    deleteForms.forEach(function (form) {
+        // Remove any inline onsubmit handler to avoid double confirms
+        form.removeAttribute('onsubmit');
+        var submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.removeAttribute('onclick');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var msg = html.lang === 'en'
+                ? 'Are you sure you want to delete?'
+                : 'Сигурни ли сте, че искате да изтриете?';
+            var f = form;
+            showConfirmModal(msg, function () { f.submit(); });
+        });
+    });
+
+    // --- Category filter auto-submit ---
     var categorySelect = document.querySelector('select[name="category"]');
     if (categorySelect) {
         categorySelect.addEventListener('change', function () {
@@ -17,30 +246,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // =============== Confirm on leave/delete ===============
-    var joinForms = document.querySelectorAll('form[action*="Leave"]');
-    joinForms.forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            var msg = document.documentElement.lang === 'en'
-                ? 'Are you sure you want to leave the club?'
-                : 'Сигурни ли сте, че искате да напуснете клуба?';
-            if (!confirm(msg)) e.preventDefault();
-        });
-    });
-
-    var deleteForms = document.querySelectorAll('form[action*="Delete"]');
-    deleteForms.forEach(function (form) {
-        form.addEventListener('submit', function (e) {
-            var msg = document.documentElement.lang === 'en'
-                ? 'Are you sure you want to delete?'
-                : 'Сигурни ли сте, че искате да изтриете?';
-            if (!confirm(msg)) e.preventDefault();
-        });
-    });
-
-    // =============== Dark / Light theme ===============
+    // --- Dark / Light theme ---
     var themeSwitcher = document.getElementById('themeSwitcher');
-    var html = document.documentElement;
 
     function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
@@ -63,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // =============== Language (BG / EN) ===============
+    // --- Language (BG / EN) ---
     var translations = {
         // Navbar
         'nav.clubs': { bg: 'Клубове', en: 'Clubs' },
@@ -228,7 +435,14 @@ document.addEventListener('DOMContentLoaded', function () {
         'clubs.stats': { bg: 'Статистика', en: 'Statistics' },
         // Events extras
         'events.cancelevent': { bg: 'Отмени събитие', en: 'Cancel Event' },
-        'events.restoreevent': { bg: 'Възстанови събитие', en: 'Restore Event' }
+        'events.restoreevent': { bg: 'Възстанови събитие', en: 'Restore Event' },
+        // Footer
+        'footer.desc': { bg: 'Платформа за управление на училищни клубове, събития и постижения. Дипломен проект.', en: 'Platform for managing school clubs, events and achievements. Diploma project.' },
+        'footer.links': { bg: 'Навигация', en: 'Navigation' },
+        'footer.home': { bg: 'Начало', en: 'Home' },
+        'footer.tech': { bg: 'Технологии', en: 'Technologies' },
+        // Landing extras
+        'landing.popularsub': { bg: 'Най-активните клубове в училището', en: 'The most active clubs in the school' }
     };
 
     var langSwitcher = document.getElementById('langSwitcher');

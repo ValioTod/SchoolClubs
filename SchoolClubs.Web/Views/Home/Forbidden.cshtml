@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Достъпът е отказан";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="text-center py-5 reveal">
+    <i class="bi bi-shield-lock display-1 text-danger"></i>
+    <h1 class="display-4 fw-bold gradient-text mt-3">403</h1>
+    <h3 class="mt-2" data-i18n="error.forbidden.title">Достъпът е отказан</h3>
+    <p class="text-muted mb-4" data-i18n="error.forbidden.message">
+        Нямате разрешение за достъп до тази страница.
+    </p>
+    <a href="/" class="btn btn-primary" data-i18n="error.home">
+        <i class="bi bi-house me-1"></i>Начало
+    </a>
+    <a href="/Identity/Account/Login" class="btn btn-outline-primary ms-2" data-i18n="error.forbidden.login">
+        <i class="bi bi-box-arrow-in-right me-1"></i>Вход
+    </a>
+</div>

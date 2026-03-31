@@ -4,22 +4,22 @@
 }
 
 <div class="row">
-    <div class="col-md-4 text-center mb-4">
-        <div class="card">
-            <div class="card-body">
+    <div class="col-md-4 text-center mb-4 reveal">
+        <div class="card border-0">
+            <div class="card-body py-4">
                 <div class="mb-3">
                     @if (Model.User.ProfilePicturePath != null)
                     {
-                        <img src="@Model.User.ProfilePicturePath" class="rounded-circle" width="120" height="120" style="object-fit:cover" />
+                        <img src="@Model.User.ProfilePicturePath" class="profile-avatar" alt="@Model.User.FullName" />
                     }
                     else
                     {
-                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center" style="width:120px;height:120px">
-                            <span class="text-white display-4">@Model.User.FullName[0]</span>
+                        <div class="profile-avatar-placeholder">
+                            <span>@Model.User.FullName[0]</span>
                         </div>
                     }
                 </div>
-                <h4>@Model.User.FullName</h4>
+                <h4 class="fw-bold">@Model.User.FullName</h4>
                 @if (Model.User.Grade > 0)
                 {
                     <p class="text-muted">@Model.User.Grade @Model.User.GradeSection клас</p>

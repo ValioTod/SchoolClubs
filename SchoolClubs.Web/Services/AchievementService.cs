@@ -4,7 +4,7 @@ using SchoolClubs.Web.Models;
 
 namespace SchoolClubs.Web.Services
 {
-    public class AchievementService
+    public class AchievementService : IAchievementService
     {
         private readonly AppDbContext _db;
 

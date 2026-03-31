@@ -4,7 +4,7 @@ using SchoolClubs.Web.Models;
 
 namespace SchoolClubs.Web.Services
 {
-    public class ClubRecommendationService
+    public class ClubRecommendationService : IClubRecommendationService
     {
         private readonly AppDbContext _db;
 

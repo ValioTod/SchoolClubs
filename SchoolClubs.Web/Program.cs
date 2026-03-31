@@ -27,8 +27,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
-builder.Services.AddScoped<ClubRecommendationService>();
 builder.Services.AddScoped<AchievementService>();
+builder.Services.AddScoped<ClubRecommendationService>();
+builder.Services.AddScoped<IAchievementService, AchievementService>();
+builder.Services.AddScoped<IClubRecommendationService, ClubRecommendationService>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -46,6 +48,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
@@ -54,8 +58,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "error",
+    pattern: "Home/Error/{statusCode?}",
+    defaults: new { controller = "Home", action = "Error" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
+
+public partial class Program { }

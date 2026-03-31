@@ -3,40 +3,48 @@
     ViewData["Title"] = "Табло";
 }
 
-<div class="row mb-4">
+<div class="row mb-4 g-3 reveal">
     <div class="col-md-3">
-        <div class="card text-center stat-card">
-            <div class="card-body">
-                <i class="bi bi-people text-primary fs-2"></i>
-                <h4>@Model.TotalClubs</h4>
-                <small class="text-muted" data-i18n="dash.clubs">Клуба</small>
+        <div class="card text-center stat-card border-0 h-100">
+            <div class="card-body py-4">
+                <div class="icon-circle icon-circle-primary mx-auto mb-2">
+                    <i class="bi bi-people"></i>
+                </div>
+                <h4 class="counter-value mb-1" data-counter="@Model.TotalClubs">0</h4>
+                <small class="text-muted fw-500" data-i18n="dash.clubs">Клуба</small>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center stat-card">
-            <div class="card-body">
-                <i class="bi bi-calendar-event text-success fs-2"></i>
-                <h4>@Model.UpcomingEventsCount</h4>
-                <small class="text-muted" data-i18n="dash.upcoming">Предстоящи събития</small>
+        <div class="card text-center stat-card border-0 h-100">
+            <div class="card-body py-4">
+                <div class="icon-circle icon-circle-success mx-auto mb-2">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+                <h4 class="counter-value mb-1" data-counter="@Model.UpcomingEventsCount">0</h4>
+                <small class="text-muted fw-500" data-i18n="dash.upcoming">Предстоящи събития</small>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center stat-card">
-            <div class="card-body">
-                <i class="bi bi-trophy text-warning fs-2"></i>
-                <h4>@Model.MyPoints</h4>
-                <small class="text-muted" data-i18n="dash.mypoints">Моите точки</small>
+        <div class="card text-center stat-card border-0 h-100">
+            <div class="card-body py-4">
+                <div class="icon-circle icon-circle-warning mx-auto mb-2">
+                    <i class="bi bi-trophy"></i>
+                </div>
+                <h4 class="counter-value mb-1" data-counter="@Model.MyPoints">0</h4>
+                <small class="text-muted fw-500" data-i18n="dash.mypoints">Моите точки</small>
             </div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card text-center stat-card">
-            <div class="card-body">
-                <i class="bi bi-bar-chart text-danger fs-2"></i>
-                <h4>#@(Model.MyRank > 0 ? Model.MyRank : "-")</h4>
-                <small class="text-muted" data-i18n="dash.myrank">Моя ранг</small>
+        <div class="card text-center stat-card border-0 h-100">
+            <div class="card-body py-4">
+                <div class="icon-circle icon-circle-danger mx-auto mb-2">
+                    <i class="bi bi-bar-chart"></i>
+                </div>
+                <h4 class="counter-value mb-1" data-counter="@(Model.MyRank > 0 ? Model.MyRank : 0)" data-counter-prefix="#">0</h4>
+                <small class="text-muted fw-500" data-i18n="dash.myrank">Моя ранг</small>
             </div>
         </div>
     </div>
@@ -44,7 +52,7 @@
 
 <div class="row">
     <div class="col-lg-8">
-        <h4 class="mb-3" data-i18n="dash.myclubs">Моите клубове</h4>
+        <h4 class="mb-3 reveal" data-i18n="dash.myclubs">Моите клубове</h4>
         @if (Model.MyClubs.Any())
         {
             <div class="row mb-4">
@@ -69,7 +77,7 @@
             </div>
         }
 
-        <h4 class="mb-3" data-i18n="dash.upcomingevents">Предстоящи събития</h4>
+        <h4 class="mb-3 reveal" data-i18n="dash.upcomingevents">Предстоящи събития</h4>
         @if (Model.UpcomingEvents.Any())
         {
             <div class="list-group mb-4">
@@ -90,7 +98,7 @@
             </div>
         }
 
-        <h4 class="mb-3" data-i18n="dash.announcements">Последни обяви</h4>
+        <h4 class="mb-3 reveal" data-i18n="dash.announcements">Последни обяви</h4>
         @if (Model.RecentAnnouncements.Any())
         {
             @foreach (var ann in Model.RecentAnnouncements)

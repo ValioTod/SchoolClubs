@@ -3,53 +3,61 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SchoolClubs — Платформа за управление на училищни клубове" />
     <title>@ViewData["Title"] - Училищни клубове</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <!-- Page loader -->
+    <div id="pageLoader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand fw-bold" href="/">
                 <i class="bi bi-mortarboard-fill me-2"></i><span data-i18n="nav.brand">Училищни клубове</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Clubs" asp-action="Index" data-i18n="nav.clubs">Клубове</a>
+                        <a class="nav-link" asp-controller="Clubs" asp-action="Index"><i class="bi bi-collection me-1"></i><span data-i18n="nav.clubs">Клубове</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Events" asp-action="Index" data-i18n="nav.events">Събития</a>
+                        <a class="nav-link" asp-controller="Events" asp-action="Index"><i class="bi bi-calendar-event me-1"></i><span data-i18n="nav.events">Събития</span></a>
                     </li>
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Profile" asp-action="Leaderboard" data-i18n="nav.leaderboard">Класация</a>
+                            <a class="nav-link" asp-controller="Profile" asp-action="Leaderboard"><i class="bi bi-trophy me-1"></i><span data-i18n="nav.leaderboard">Класация</span></a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Feedback" asp-action="Index" data-i18n="nav.feedback">Обратна връзка</a>
+                            <a class="nav-link" asp-controller="Feedback" asp-action="Index"><i class="bi bi-chat-dots me-1"></i><span data-i18n="nav.feedback">Обратна връзка</span></a>
                         </li>
                     }
                     @if (User.IsInRole("Admin"))
                     {
                         <li class="nav-item">
-                            <a class="nav-link text-warning" asp-controller="Admin" asp-action="Index">
-                                <i class="bi bi-gear-fill"></i> <span data-i18n="nav.admin">Админ</span>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Index" style="color:#fbbf24 !important">
+                                <i class="bi bi-shield-lock-fill"></i> <span data-i18n="nav.admin">Админ</span>
                             </a>
                         </li>
                     }
                 </ul>
-                <ul class="navbar-nav">
-                    <li class="nav-item d-flex align-items-center me-2">
+                <ul class="navbar-nav align-items-center">
+                    <li class="nav-item me-1">
                         <button id="themeSwitcher" class="toggle-btn" title="Toggle dark/light theme">
                             <i class="bi bi-moon-stars-fill"></i>
                         </button>
                     </li>
-                    <li class="nav-item d-flex align-items-center me-2">
+                    <li class="nav-item me-2">
                         <button id="langSwitcher" class="toggle-btn" title="Switch language">
                             <span id="langLabel">EN</span>
                         </button>
@@ -73,7 +81,7 @@
                             <a class="nav-link" asp-area="Identity" asp-page="/Account/Login" data-i18n="nav.login">Вход</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register" data-i18n="nav.register">Регистрация</a>
+                            <a class="nav-link btn btn-sm btn-outline-light ms-2 px-3" asp-area="Identity" asp-page="/Account/Register" data-i18n="nav.register">Регистрация</a>
                         </li>
                     }
                 </ul>
@@ -99,11 +107,39 @@
         @RenderBody()
     </main>
 
-    <footer class="bg-dark text-light py-4 mt-auto">
-        <div class="container text-center">
-            <p class="mb-0" data-i18n="footer.copy">&copy; @DateTime.Now.Year Училищни клубове. Дипломен проект.</p>
+    <footer class="py-5 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-mortarboard-fill me-2" style="color:#fbbf24"></i><span data-i18n="nav.brand">Училищни клубове</span></h5>
+                    <p class="small text-muted mb-0" data-i18n="footer.desc">Платформа за управление на училищни клубове, събития и постижения. Дипломен проект.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold mb-3" data-i18n="footer.links">Навигация</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="/" class="text-decoration-none text-muted"><i class="bi bi-house me-1"></i> <span data-i18n="footer.home">Начало</span></a></li>
+                        <li class="mb-2"><a asp-controller="Clubs" asp-action="Index" class="text-decoration-none text-muted"><i class="bi bi-collection me-1"></i> <span data-i18n="nav.clubs">Клубове</span></a></li>
+                        <li class="mb-2"><a asp-controller="Events" asp-action="Index" class="text-decoration-none text-muted"><i class="bi bi-calendar-event me-1"></i> <span data-i18n="nav.events">Събития</span></a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold mb-3" data-i18n="footer.tech">Технологии</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-secondary">ASP.NET Core 8.0</span>
+                        <span class="badge bg-secondary">Entity Framework</span>
+                        <span class="badge bg-secondary">SQL Server</span>
+                        <span class="badge bg-secondary">Bootstrap 5.3</span>
+                        <span class="badge bg-secondary">xUnit</span>
+                    </div>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.1)" />
+            <p class="text-center small text-muted mb-0" data-i18n="footer.copy">&copy; @DateTime.Now.Year Училищни клубове. Дипломен проект.</p>
         </div>
     </footer>
+
+    <!-- Back to top -->
+    <button id="backToTop" title="Back to top"><i class="bi bi-chevron-up"></i></button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js"></script>

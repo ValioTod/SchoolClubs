@@ -3,7 +3,7 @@
     ViewData["Title"] = "Клубове";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4 reveal">
     <h2><span data-i18n="clubs.title">Клубове</span> <small class="text-muted fs-6">(@Model.TotalCount)</small></h2>
     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
     {
@@ -33,30 +33,35 @@
     </div>
 </form>
 
-<div class="row">
+<div class="row g-4">
     @foreach (var club in Model.Clubs)
     {
-        <div class="col-md-4 mb-4">
-            <div class="card club-card h-100">
+        <div class="col-md-4 mb-2 reveal">
+            <div class="card club-card h-100 border-0">
                 <div class="card-body d-flex flex-column">
-                    <div class="mb-2">
-                        <span class="badge bg-secondary">@club.Category</span>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary">@club.Category</span>
                         @if (!club.IsActive)
                         {
                             <span class="badge bg-danger" data-i18n="clubs.inactive">Неактивен</span>
                         }
                     </div>
-                    <h5 class="card-title">@club.Name</h5>
-                    <p class="card-text text-muted flex-grow-1">
+                    <h5 class="card-title fw-bold">@club.Name</h5>
+                    <p class="card-text text-muted small flex-grow-1">
                         @(club.Description.Length > 100 ? club.Description[..100] + "..." : club.Description)
                     </p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <small class="text-muted">
-                            <i class="bi bi-people"></i> @club.Members.Count / @club.MaxMembers
-                        </small>
-                        <a asp-action="Details" asp-route-id="@club.Id" class="btn btn-sm btn-outline-primary" data-i18n="clubs.details">
-                            Детайли
-                        </a>
+                    <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted">
+                                <i class="bi bi-people-fill"></i> @club.Members.Count / @club.MaxMembers
+                            </small>
+                            <a asp-action="Details" asp-route-id="@club.Id" class="btn btn-sm btn-outline-primary" data-i18n="clubs.details">
+                                Детайли <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                        <div class="member-progress">
+                            <div class="member-progress-bar" style="width: @(club.MaxMembers > 0 ? (int)(club.Members.Count * 100.0 / club.MaxMembers) : 0)%"></div>
+                        </div>
                     </div>
                 </div>
             </div>

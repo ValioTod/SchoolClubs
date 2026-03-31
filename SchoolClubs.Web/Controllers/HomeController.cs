@@ -108,8 +108,13 @@ namespace SchoolClubs.Web.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? statusCode = null)
         {
+            if (statusCode == 404)
+                return View("NotFound");
+            if (statusCode == 403)
+                return View("Forbidden");
+
             return View();
         }
     }
