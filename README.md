@@ -158,6 +158,17 @@ dotnet run --project SchoolClubs.Web
 
 Приложението е достъпно на `http://localhost:5000`. Базата данни се създава и засява автоматично при първо стартиране — не са нужни миграции.
 
+## Тестови акаунти
+
+| Роля | Email | Парола |
+|------|-------|--------|
+| Admin | admin@schoolclubs.bg | Admin123! |
+| Student | ivan.petrov@school.bg | Student123! |
+| Student | maria.ivanova@school.bg | Student123! |
+| Student | georgi.dimitrov@school.bg | Student123! |
+| Student | elena.stoyanova@school.bg | Student123! |
+| Student | nikolay.kolev@school.bg | Student123! |
+
 ### Тестове
 ```bash
 dotnet test
