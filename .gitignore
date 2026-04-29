@@ -3,10 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
-# Scripts
+# Scripts and temp files
 commit_script.ps1
 git_out.txt
 _check.ps1
+_output.txt
+credentials.txt
 
 # Database files
 *.db

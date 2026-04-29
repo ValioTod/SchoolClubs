@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Details" asp-route-id="@club?.Id">@club?.Name</a></li>
-        <li class="breadcrumb-item active" data-i18n="gallery.title">Галерия</li>
+        <li class="breadcrumb-item active">Галерия</li>
     </ol>
 </nav>
 
@@ -20,16 +20,16 @@
             <input type="hidden" name="clubId" value="@club?.Id" />
             <div class="row align-items-end">
                 <div class="col-md-5">
-                    <label class="form-label" data-i18n="gallery.photo">Снимка</label>
+                    <label class="form-label">Снимка</label>
                     <input type="file" name="photo" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" required />
                 </div>
                 <div class="col-md-5">
-                    <label class="form-label" data-i18n="gallery.desc">Описание</label>
-                    <input type="text" name="caption" class="form-control" placeholder="Кратко описание..." data-i18n-placeholder="gallery.captionph" />
+                    <label class="form-label">Описание</label>
+                    <input type="text" name="caption" class="form-control" placeholder="Кратко описание..." />
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-warning w-100">
-                        <i class="bi bi-upload"></i> <span data-i18n="gallery.upload">Качи</span>
+                        <i class="bi bi-upload"></i> <span>Качи</span>
                     </button>
                 </div>
             </div>
@@ -72,6 +72,6 @@
 {
     <div class="text-center py-5 text-muted">
         <i class="bi bi-images display-3"></i>
-        <p class="mt-2" data-i18n="gallery.none">Все още няма снимки. Бъдете първият!</p>
+        <p class="mt-2">Все още няма снимки. Бъдете първият!</p>
     </div>
 }

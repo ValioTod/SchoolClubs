@@ -225,8 +225,10 @@ dotnet test
 
 ## Документация
 
-- **🚀 [AZURE_QUICKSTART.md](./AZURE_QUICKSTART.md)** - Deploy в 5 минути (препоръчано!)
+- **🚀 [AZURE_QUICKSTART.md](./AZURE_QUICKSTART.md)** - Deploy в 5 минути (Azure)
+- **🚀 [RENDER_QUICKSTART.md](./RENDER_QUICKSTART.md)** - Deploy в 10 минути (Render Docker)
 - **[AZURE_DEPLOYMENT.md](./AZURE_DEPLOYMENT.md)** - Детално ръководство за Azure App Service
+- **[RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)** - Детално ръководство за Render
 - **[AZURE_DEPLOYMENT_CHECKLIST.md](./AZURE_DEPLOYMENT_CHECKLIST.md)** - Контролен списък за развръщане
 - [DEPLOYMENT.md](./DEPLOYMENT.md) - Пълно ръководство за всички опции (Docker, IIS, Linux)
 - [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Резюме на всички решени проблеми
@@ -234,22 +236,22 @@ dotnet test
 
 ## Развръщане (Deployment)
 
-**Препоръчано**: Развържете в **Azure** за 5 минути! 
+**Изберете един от двата препоръчани варианта:**
 
+### Вариант 1: Azure (Native .NET)
 ```powershell
-# 1. Автоматична настройка на Azure ресурси
 .\scripts\azure-setup.ps1
-
-# 2. Публикуване на приложението
 dotnet publish SchoolClubs.Web -c Release -o ./publish
-
-# 3. Развръщане в Azure
 az webapp up --resource-group schoolclubs-rg --name schoolclubs-app --runtime DOTNETCORE:8.0
-
-# 4. Отворете в браузър
-# https://schoolclubs-app.azurewebsites.net
 ```
+👉 **[Azure Quick Start →](./AZURE_QUICKSTART.md)** (5 minutes)
 
-👉 **[Пълна инструкция →](./AZURE_QUICKSTART.md)**
+### Вариант 2: Render (Docker - Free to Start)
+1. Create Render account at [render.com](https://render.com)
+2. Connect GitHub repo
+3. Create Web Service with Docker
+4. Set environment variables
+5. Deploy! ✅
+👉 **[Render Quick Start →](./RENDER_QUICKSTART.md)** (10 minutes)
 
-Други опции: Docker, IIS, Linux - вижте [DEPLOYMENT.md](./DEPLOYMENT.md)
+**Други опции:** Docker, IIS, Linux - вижте [DEPLOYMENT.md](./DEPLOYMENT.md)

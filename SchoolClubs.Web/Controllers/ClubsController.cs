@@ -194,10 +194,9 @@ namespace SchoolClubs.Web.Controllers
             var club = await _db.Clubs.Include(c => c.Members).FirstOrDefaultAsync(c => c.Id == id);
             if (club == null) return NotFound();
 
-            // Check if user already has any membership (pending or active)
-            if (club.Members.Any(m => m.UserId == user.Id && m.Status != MembershipStatus.Rejected))
+            if (club.Members.Any(m => m.UserId == user.Id && m.Status == MembershipStatus.Active))
             {
-                TempData["Error"] = "Вече сте подали заявка или сте член на този клуб.";
+                TempData["Error"] = "Вече сте член на този клуб.";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
@@ -208,16 +207,17 @@ namespace SchoolClubs.Web.Controllers
                 return RedirectToAction(nameof(Details), new { id });
             }
 
-            // Create pending membership
             _db.ClubMemberships.Add(new ClubMembership
             {
                 UserId = user.Id,
                 ClubId = id,
-                Status = MembershipStatus.Pending
+                Status = MembershipStatus.Active
             });
             await _db.SaveChangesAsync();
 
-            TempData["Success"] = "Заявката за присъединяване е изпратена. Ръководителят на клуба ще я одобри или отхвърли.";
+            await _achievementService.CheckAndAwardAchievements(user.Id);
+
+            TempData["Success"] = "Успешно се записахте в клуба!";
             return RedirectToAction(nameof(Details), new { id });
         }
 

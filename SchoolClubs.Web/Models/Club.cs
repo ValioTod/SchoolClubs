@@ -13,6 +13,9 @@ namespace SchoolClubs.Web.Models
         [Required(ErrorMessage = "Описанието е задължително")]
         public string Description { get; set; } = null!;
 
+        public string? NameEn { get; set; }
+        public string? DescriptionEn { get; set; }
+
         [MaxLength(50)]
         public string Category { get; set; } = "Друго";
 

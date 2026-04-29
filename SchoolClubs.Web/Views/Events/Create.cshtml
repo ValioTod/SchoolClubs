@@ -4,7 +4,7 @@
     var minDateTime = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm");
 }
 
-<h2 data-i18n="events.createtitle">Създаване на събитие</h2>
+<h2>Създаване на събитие</h2>
 
 <div class="row">
     <div class="col-md-8">
@@ -53,9 +53,9 @@
             </div>
 
             <button type="submit" class="btn btn-success">
-                <i class="bi bi-calendar-plus"></i> <span data-i18n="events.createbtn">Създай</span>
+                <i class="bi bi-calendar-plus"></i> <span>Създай</span>
             </button>
-            <a asp-controller="Clubs" asp-action="Details" asp-route-id="@Model.ClubId" class="btn btn-secondary ms-2" data-i18n="clubs.back">Назад</a>
+            <a asp-controller="Clubs" asp-action="Details" asp-route-id="@Model.ClubId" class="btn btn-secondary ms-2">Назад</a>
         </form>
     </div>
 </div>

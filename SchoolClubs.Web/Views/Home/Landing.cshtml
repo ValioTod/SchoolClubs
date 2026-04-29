@@ -1,58 +1,54 @@
 @{
-    ViewData["Title"] = "Училищни клубове";
+    ViewData["Title"] = "Начало";
     var clubs = ViewBag.FeaturedClubs as List<SchoolClubs.Web.Models.Club>;
     int totalClubs = ViewBag.TotalClubs;
     int totalStudents = ViewBag.TotalStudents;
     int totalEvents = ViewBag.TotalEvents;
 }
 
-<div class="hero-section text-center py-5 mb-5 reveal">
-    <h1 class="display-4 fw-bold mb-3" data-i18n="landing.title">Открий своя клуб</h1>
-    <p class="lead mb-4" style="color:rgba(255,255,255,0.85);font-size:1.25rem" data-i18n="landing.subtitle">Разгледай училищните клубове, запиши се и участвай в събития</p>
-    <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
-        <a asp-controller="Clubs" asp-action="Index" class="btn btn-light btn-lg px-4">
-            <i class="bi bi-search me-1"></i> <span data-i18n="landing.browse">Разгледай клубовете</span>
-        </a>
-        <a asp-controller="Home" asp-action="Benefits" class="btn btn-outline-light btn-lg px-4">
-            <i class="bi bi-star me-1"></i> <span>Предимства</span>
+<div class="hero-section text-center py-5 mb-4">
+    <h1 class="display-5 fw-bold mb-3" data-i18n="landing.hero">Открий своя клуб</h1>
+    <p class="lead mb-4" style="color:rgba(255,255,255,0.85)" data-i18n="landing.sub">Разгледай наличните клубове в училището и се запиши за участие</p>
+    <div class="mt-3 d-flex justify-content-center gap-3 flex-wrap">
+        <a asp-controller="Auth" asp-action="Login" class="btn btn-light btn-lg px-4">
+            <i class="bi bi-box-arrow-in-right me-1"></i> <span data-i18n="nav.login">Вход</span>
         </a>
         <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-light btn-lg px-4">
-            <i class="bi bi-person-plus me-1"></i> <span data-i18n="landing.register">Регистрация</span>
+            <i class="bi bi-person-plus me-1"></i> <span data-i18n="nav.register">Регистрация</span>
         </a>
     </div>
 </div>
 
-<div class="row text-center mb-5 g-4">
-    <div class="col-md-4 reveal delay-1">
-        <div class="card stat-card p-4 h-100 text-center border-0">
+<div class="alert alert-info mb-4" role="alert">
+    <i class="bi bi-info-circle me-2"></i>
+    <span data-i18n="landing.guestNote">Разглеждате сайта като гост. <strong>Влезте в профил или се регистрирайте</strong>, за да се запишете в клуб, да участвате в събития и да виждате своите постижения.</span>
+</div>
+
+<div class="row text-center mb-5 g-3">
+    <div class="col-md-4">
+        <div class="card p-3 h-100 border-0">
             <div class="card-body">
-                <div class="icon-circle icon-circle-primary mx-auto mb-3" style="width:64px;height:64px;font-size:1.5rem">
-                    <i class="bi bi-people-fill"></i>
-                </div>
-                <h2 class="counter-value" data-counter="@totalClubs">0</h2>
-                <p class="text-muted mb-0 fw-500" data-i18n="landing.active">Активни клуба</p>
+                <i class="bi bi-people-fill" style="font-size:2rem;color:var(--primary)"></i>
+                <h3 class="mt-2 mb-1">@totalClubs</h3>
+                <p class="text-muted mb-0" data-i18n="landing.activeClubs">Активни клуба</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4 reveal delay-2">
-        <div class="card stat-card p-4 h-100 text-center border-0">
+    <div class="col-md-4">
+        <div class="card p-3 h-100 border-0">
             <div class="card-body">
-                <div class="icon-circle icon-circle-success mx-auto mb-3" style="width:64px;height:64px;font-size:1.5rem">
-                    <i class="bi bi-person-check-fill"></i>
-                </div>
-                <h2 class="counter-value" data-counter="@totalStudents">0</h2>
-                <p class="text-muted mb-0 fw-500" data-i18n="landing.students">Регистрирани ученици</p>
+                <i class="bi bi-person-check-fill" style="font-size:2rem;color:var(--success)"></i>
+                <h3 class="mt-2 mb-1">@totalStudents</h3>
+                <p class="text-muted mb-0" data-i18n="landing.students">Регистрирани ученици</p>
             </div>
         </div>
     </div>
-    <div class="col-md-4 reveal delay-3">
-        <div class="card stat-card p-4 h-100 text-center border-0">
+    <div class="col-md-4">
+        <div class="card p-3 h-100 border-0">
             <div class="card-body">
-                <div class="icon-circle icon-circle-warning mx-auto mb-3" style="width:64px;height:64px;font-size:1.5rem">
-                    <i class="bi bi-calendar-event-fill"></i>
-                </div>
-                <h2 class="counter-value" data-counter="@totalEvents">0</h2>
-                <p class="text-muted mb-0 fw-500" data-i18n="landing.events">Събития</p>
+                <i class="bi bi-calendar-event-fill" style="font-size:2rem;color:var(--warning)"></i>
+                <h3 class="mt-2 mb-1">@totalEvents</h3>
+                <p class="text-muted mb-0" data-i18n="landing.upcomingEvents">Предстоящи събития</p>
             </div>
         </div>
     </div>
@@ -60,33 +56,33 @@
 
 @if (clubs?.Any() == true)
 {
-    <div class="mb-2 reveal">
-        <h3 class="fw-bold" data-i18n="landing.popular">Популярни клубове</h3>
-        <p class="text-muted" data-i18n="landing.popularsub">Най-активните клубове в училището</p>
-    </div>
+    <h4 class="fw-bold mb-1" data-i18n="landing.available">Налични клубове</h4>
+    <p class="text-muted mb-3" data-i18n="landing.loginToJoin">За да се запишеш, трябва да влезеш в профила си.</p>
     <div class="row g-4">
-        @{ int idx = 0; }
         @foreach (var club in clubs)
         {
-            <div class="col-md-4 mb-2 reveal delay-@(idx + 1)">
+            <div class="col-md-4 mb-2">
                 <div class="card club-card h-100 border-0">
                     <div class="card-body d-flex flex-column">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
                             <span class="badge bg-primary">@club.Category</span>
                             <small class="text-muted"><i class="bi bi-people-fill"></i> @club.Members.Count / @club.MaxMembers</small>
                         </div>
-                        <h5 class="card-title fw-bold mb-2">@club.Name</h5>
-                        <p class="card-text text-muted small flex-grow-1">@(club.Description.Length > 100 ? club.Description[..100] + "..." : club.Description)</p>
-                        <div class="member-progress">
+                        <h5 class="card-title fw-bold mb-2"
+                            data-lang-bg="@club.Name"
+                            data-lang-en="@(club.NameEn ?? club.Name)">@club.Name</h5>
+                        <p class="card-text text-muted small flex-grow-1"
+                           data-lang-bg="@(club.Description.Length > 100 ? club.Description[..100] + "..." : club.Description)"
+                           data-lang-en="@(club.DescriptionEn != null ? (club.DescriptionEn.Length > 100 ? club.DescriptionEn[..100] + "..." : club.DescriptionEn) : (club.Description.Length > 100 ? club.Description[..100] + "..." : club.Description))">@(club.Description.Length > 100 ? club.Description[..100] + "..." : club.Description)</p>
+                        <div class="member-progress mb-2">
                             <div class="member-progress-bar" style="width: @(club.MaxMembers > 0 ? (int)(club.Members.Count * 100.0 / club.MaxMembers) : 0)%"></div>
                         </div>
-                        <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="btn btn-outline-primary btn-sm mt-3 align-self-start">
-                            <span data-i18n="landing.viewmore">Виж повече</span> <i class="bi bi-arrow-right"></i>
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-primary btn-sm mt-1 align-self-start" data-i18n="landing.loginBtn">
+                            Влез, за да се запишеш <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            idx++;
         }
     </div>
 }

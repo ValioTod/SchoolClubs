@@ -1,9 +1,9 @@
 @model SchoolClubs.Web.Models.ViewModels.AdminDashboardViewModel
 @{
-    ViewData["Title"] = "Admin Panel";
+    ViewData["Title"] = "Административен панел";
 }
 
-<h2><i class="bi bi-gear-fill text-warning"></i> <span data-i18n="admin.title">Admin Panel</span></h2>
+<h2><i class="bi bi-gear-fill text-warning"></i> Административен панел</h2>
 
 <div class="row mb-4 mt-3">
     <div class="col-md-2">
@@ -12,7 +12,7 @@
                 <div class="card-body">
                     <i class="bi bi-people text-primary fs-3"></i>
                     <h4>@Model.TotalUsers</h4>
-                    <small class="text-muted">Users</small>
+                    <small class="text-muted">Потребители</small>
                 </div>
             </div>
         </a>
@@ -23,7 +23,7 @@
                 <div class="card-body">
                     <i class="bi bi-collection text-success fs-3"></i>
                     <h4>@Model.TotalClubs</h4>
-                    <small class="text-muted">Clubs</small>
+                    <small class="text-muted">Клубове</small>
                 </div>
             </div>
         </a>
@@ -33,7 +33,7 @@
             <div class="card-body">
                 <i class="bi bi-calendar-event text-info fs-3"></i>
                 <h4>@Model.TotalEvents</h4>
-                <small class="text-muted">Events</small>
+                <small class="text-muted">Събития</small>
             </div>
         </div>
     </div>
@@ -42,7 +42,7 @@
             <div class="card-body">
                 <i class="bi bi-megaphone text-secondary fs-3"></i>
                 <h4>@Model.TotalAnnouncements</h4>
-                <small class="text-muted">Announcements</small>
+                <small class="text-muted">Обяви</small>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
                 <div class="card-body">
                     <i class="bi bi-chat-dots text-warning fs-3"></i>
                     <h4>@Model.TotalFeedbacks</h4>
-                    <small class="text-muted">Feedback</small>
+                    <small class="text-muted">Отзиви</small>
                 </div>
             </div>
         </a>
@@ -63,7 +63,7 @@
                 <div class="card-body">
                     <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
                     <h4>@Model.UnresolvedFeedbacks</h4>
-                    <small class="text-muted">Unresolved</small>
+                    <small class="text-muted">Нерешени</small>
                 </div>
             </div>
         </a>
@@ -74,17 +74,17 @@
     <div class="col-lg-6">
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between">
-                <span><i class="bi bi-collection"></i> All Clubs</span>
+                <span><i class="bi bi-collection"></i> Всички клубове</span>
             </div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>Club</th>
-                            <th>Leader</th>
-                            <th>Members</th>
-                            <th>Status</th>
-                            <th>Actions</th>
+                            <th>Клуб</th>
+                            <th>Ръководител</th>
+                            <th>Членове</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,39 +92,37 @@
                         {
                             <tr>
                                 <td>
-                                    <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="text-decoration-none">
-                                        @club.Name
-                                    </a>
+                                    <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="text-decoration-none">@club.Name</a>
                                 </td>
                                 <td><small>@(club.Leader?.FullName ?? "—")</small></td>
                                 <td>@club.Members.Count / @club.MaxMembers</td>
                                 <td>
                                     @if (club.IsActive)
                                     {
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="badge bg-success">Активен</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="badge bg-secondary">Неактивен</span>
                                     }
                                 </td>
                                 <td>
                                     <form asp-action="ToggleClub" asp-route-id="@club.Id" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm @(club.IsActive ? "btn-outline-warning" : "btn-outline-success")" title="Toggle">
+                                        <button type="submit" class="btn btn-sm @(club.IsActive ? "btn-outline-warning" : "btn-outline-success")" title="Превключи">
                                             <i class="bi @(club.IsActive ? "bi-pause-fill" : "bi-play-fill")"></i>
                                         </button>
                                     </form>
-                                    <form asp-action="DeleteClub" asp-route-id="@club.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this club permanently?')">
+                                    <form asp-action="DeleteClub" asp-route-id="@club.Id" method="post" class="d-inline" onsubmit="return confirm('Изтрий клуба завинаги?')">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Изтрий">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
-                                    <a asp-controller="Profile" asp-action="Statistics" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-info" title="Stats">
+                                    <a asp-controller="Profile" asp-action="Statistics" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-info" title="Статистика">
                                         <i class="bi bi-graph-up"></i>
                                     </a>
-                                    <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-secondary" title="Export CSV">
+                                    <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@club.Id" class="btn btn-sm btn-outline-secondary" title="Експортирай CSV">
                                         <i class="bi bi-download"></i>
                                     </a>
                                 </td>
@@ -139,16 +137,16 @@
     <div class="col-lg-6">
         <div class="card mb-4">
             <div class="card-header">
-                <i class="bi bi-people"></i> Recent Users
+                <i class="bi bi-people"></i> Последни потребители
             </div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Joined</th>
-                            <th>Actions</th>
+                            <th>Име</th>
+                            <th>Имейл</th>
+                            <th>Регистриран</th>
+                            <th>Роля</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,22 +154,20 @@
                         {
                             <tr>
                                 <td>
-                                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@user.Id" class="text-decoration-none">
-                                        @user.FullName
-                                    </a>
+                                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@user.Id" class="text-decoration-none">@user.FullName</a>
                                 </td>
                                 <td><small>@user.Email</small></td>
                                 <td><small>@user.DateJoined.ToString("dd.MM.yyyy")</small></td>
                                 <td>
                                     <div class="dropdown d-inline">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Role</button>
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">Роля</button>
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <form asp-action="ChangeUserRole" method="post">
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Student" />
-                                                    <button type="submit" class="dropdown-item">Student</button>
+                                                    <button type="submit" class="dropdown-item">Ученик</button>
                                                 </form>
                                             </li>
                                             <li>
@@ -179,7 +175,7 @@
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Teacher" />
-                                                    <button type="submit" class="dropdown-item">Teacher</button>
+                                                    <button type="submit" class="dropdown-item">Учител</button>
                                                 </form>
                                             </li>
                                             <li>
@@ -187,7 +183,7 @@
                                                     @Html.AntiForgeryToken()
                                                     <input type="hidden" name="userId" value="@user.Id" />
                                                     <input type="hidden" name="role" value="Admin" />
-                                                    <button type="submit" class="dropdown-item">Admin</button>
+                                                    <button type="submit" class="dropdown-item">Администратор</button>
                                                 </form>
                                             </li>
                                         </ul>
@@ -204,7 +200,7 @@
         {
             <div class="card">
                 <div class="card-header">
-                    <i class="bi bi-chat-dots"></i> Recent Feedback
+                    <i class="bi bi-chat-dots"></i> Последни отзиви
                 </div>
                 <div class="card-body">
                     @foreach (var fb in Model.RecentFeedbacks)
@@ -212,11 +208,10 @@
                         <div class="mb-3 p-2 border rounded @(!fb.IsResolved ? "border-warning" : "")">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
-                                    <strong>@fb.Subject</strong>
-                                    <br />
+                                    <strong>@fb.Subject</strong><br />
                                     <span class="badge bg-info me-2">@fb.Category</span>
                                     <span class="badge @(fb.IsResolved ? "bg-success" : "bg-warning text-dark")">
-                                        @(fb.IsResolved ? "Resolved" : "Pending")
+                                        @(fb.IsResolved ? "Решен" : "Изчакващ")
                                     </span>
                                 </div>
                             </div>
@@ -226,14 +221,14 @@
                             {
                                 <form asp-action="ResolveFeedback" asp-route-id="@fb.Id" method="post" class="d-flex gap-2">
                                     @Html.AntiForgeryToken()
-                                    <input type="text" name="response" class="form-control form-control-sm" placeholder="Response (optional)..." />
-                                    <button type="submit" class="btn btn-sm btn-success">Resolve</button>
+                                    <input type="text" name="response" class="form-control form-control-sm" placeholder="Отговор (по избор)..." />
+                                    <button type="submit" class="btn btn-sm btn-success">Реши</button>
                                 </form>
                             }
                             else if (fb.AdminResponse != null)
                             {
                                 <div class="mt-1 p-2 bg-light rounded">
-                                    <small><strong>Response:</strong> @fb.AdminResponse</small>
+                                    <small><strong>Отговор:</strong> @fb.AdminResponse</small>
                                 </div>
                             }
                         </div>

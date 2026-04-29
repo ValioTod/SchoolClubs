@@ -98,79 +98,95 @@ namespace SchoolClubs.Web.Data
             {
                 new Club
                 {
-                    Name = "Programming Club",
-                    Description = "We study C#, Python and web technologies. Preparation for informatics competitions and building our own projects.",
-                    Category = "Technology",
-                    MeetingSchedule = "Tuesday and Thursday 15:00-17:00",
-                    MeetingLocation = "Room 301",
+                    Name = "Клуб по програмиране",
+                    NameEn = "Programming Club",
+                    Description = "Изучаваме C#, Python и уеб технологии. Подготовка за олимпиади по информатика и разработка на собствени проекти.",
+                    DescriptionEn = "We study C#, Python and web technologies. Preparation for informatics olympiads and developing our own projects.",
+                    Category = "Технологии",
+                    MeetingSchedule = "Вторник и Четвъртък 15:00-17:00",
+                    MeetingLocation = "Кабинет 301",
                     MaxMembers = 25,
                     LeaderId = leader?.Id,
                     IsActive = true
                 },
                 new Club
                 {
-                    Name = "Debate Club",
-                    Description = "We learn to argue our position, speak publicly and think critically. We participate in inter-school tournaments.",
-                    Category = "Humanities",
-                    MeetingSchedule = "Wednesday 14:30-16:00",
-                    MeetingLocation = "Hall 102",
+                    Name = "Дебатен клуб",
+                    NameEn = "Debate Club",
+                    Description = "Учим се да защитаваме позицията си, да говорим публично и да мислим критично. Участваме в междуучилищни турнири.",
+                    DescriptionEn = "We learn to defend our position, speak publicly and think critically. We participate in inter-school tournaments.",
+                    Category = "Хуманитарни",
+                    MeetingSchedule = "Сряда 14:30-16:00",
+                    MeetingLocation = "Зала 102",
                     MaxMembers = 20,
                     LeaderId = allStudents.Skip(1).FirstOrDefault()?.Id
                 },
                 new Club
                 {
-                    Name = "Photography and Video",
-                    Description = "We shoot, edit and create visual content. From basics of composition to drone work.",
-                    Category = "Art",
-                    MeetingSchedule = "Friday 14:00-16:30",
-                    MeetingLocation = "Media Room",
+                    Name = "Фотография и видео",
+                    NameEn = "Photography & Video",
+                    Description = "Снимаме, монтираме и създаваме визуално съдържание. От основите на композицията до работа с дрон.",
+                    DescriptionEn = "We shoot, edit and create visual content. From the basics of composition to working with a drone.",
+                    Category = "Изкуство",
+                    MeetingSchedule = "Петък 14:00-16:30",
+                    MeetingLocation = "Медийна зала",
                     MaxMembers = 15,
                     LeaderId = allStudents.Skip(2).FirstOrDefault()?.Id
                 },
                 new Club
                 {
-                    Name = "Eco Club",
-                    Description = "We take care of the school garden, organize clean-ups and recycling campaigns.",
-                    Category = "Nature",
-                    MeetingSchedule = "Monday 15:00-16:30",
-                    MeetingLocation = "School Yard / Room 205",
+                    Name = "Еко клуб",
+                    NameEn = "Eco Club",
+                    Description = "Грижим се за училищната градина, организираме почиствания и кампании за рециклиране.",
+                    DescriptionEn = "We take care of the school garden, organise clean-ups and recycling campaigns.",
+                    Category = "Природа",
+                    MeetingSchedule = "Понеделник 15:00-16:30",
+                    MeetingLocation = "Двор / Кабинет 205",
                     MaxMembers = 30,
                     LeaderId = allStudents.Skip(3).FirstOrDefault()?.Id
                 },
                 new Club
                 {
-                    Name = "Robotics",
-                    Description = "We build robots with Arduino and Raspberry Pi. Preparation for First Lego League and other competitions.",
-                    Category = "Technology",
-                    MeetingSchedule = "Monday and Wednesday 15:30-17:00",
-                    MeetingLocation = "Lab 401",
+                    Name = "Роботика",
+                    NameEn = "Robotics",
+                    Description = "Строим роботи с Arduino и Raspberry Pi. Подготовка за First Lego League и други състезания.",
+                    DescriptionEn = "We build robots with Arduino and Raspberry Pi. Preparation for First Lego League and other competitions.",
+                    Category = "Технологии",
+                    MeetingSchedule = "Понеделник и Сряда 15:30-17:00",
+                    MeetingLocation = "Лаборатория 401",
                     MaxMembers = 18
                 },
                 new Club
                 {
-                    Name = "Theater Troupe",
-                    Description = "We prepare performances for school celebrations. Improvisations, acting skills, stage speech.",
-                    Category = "Art",
-                    MeetingSchedule = "Tuesday and Friday 15:00-17:00",
-                    MeetingLocation = "Assembly Hall",
+                    Name = "Театрална трупа",
+                    NameEn = "Theatre Troupe",
+                    Description = "Подготвяме представления за училищни тържества. Импровизации, актьорски умения, сценична реч.",
+                    DescriptionEn = "We prepare performances for school celebrations. Improvisation, acting skills, stage speech.",
+                    Category = "Изкуство",
+                    MeetingSchedule = "Вторник и Петък 15:00-17:00",
+                    MeetingLocation = "Актова зала",
                     MaxMembers = 25
                 },
                 new Club
                 {
-                    Name = "Chess Club",
-                    Description = "For beginners and advanced players. Weekly tournaments, preparation for regional and national competitions.",
-                    Category = "Sports",
-                    MeetingSchedule = "Thursday 14:00-16:00",
-                    MeetingLocation = "Room 108",
+                    Name = "Шахматен клуб",
+                    NameEn = "Chess Club",
+                    Description = "За начинаещи и напреднали. Седмични турнири, подготовка за регионални и национални състезания.",
+                    DescriptionEn = "For beginners and advanced players. Weekly tournaments, preparation for regional and national competitions.",
+                    Category = "Спорт",
+                    MeetingSchedule = "Четвъртък 14:00-16:00",
+                    MeetingLocation = "Кабинет 108",
                     MaxMembers = 20
                 },
                 new Club
                 {
-                    Name = "Creative Writing Club",
-                    Description = "We write stories, poetry, essays. We have our own literary newspaper and do live readings.",
-                    Category = "Humanities",
-                    MeetingSchedule = "Wednesday 14:30-16:00",
-                    MeetingLocation = "Library",
+                    Name = "Клуб за творческо писане",
+                    NameEn = "Creative Writing Club",
+                    Description = "Пишем разкази, поезия, есета. Имаме собствен литературен вестник и правим четения на живо.",
+                    DescriptionEn = "We write stories, poetry and essays. We have our own literary newspaper and do live readings.",
+                    Category = "Хуманитарни",
+                    MeetingSchedule = "Сряда 14:30-16:00",
+                    MeetingLocation = "Библиотека",
                     MaxMembers = 15
                 }
             };
@@ -205,31 +221,31 @@ namespace SchoolClubs.Web.Data
             {
                 new Event
                 {
-                    Title = "Hackathon 2026",
-                    Description = "24-hour hackathon on the topic 'Green Technologies'. Teams of 3. Food and drinks provided.",
+                    Title = "Хакатон 2026",
+                    Description = "24-часов хакатон на тема 'Зелени технологии'. Отбори от по 3 човека. Осигурени са храна и напитки.",
                     StartDate = DateTime.UtcNow.AddDays(14),
                     EndDate = DateTime.UtcNow.AddDays(15),
-                    Location = "Gym",
+                    Location = "Физкултурен салон",
                     MaxAttendees = 60,
                     ClubId = programmingClub.Id,
                     AttendanceCode = Guid.NewGuid().ToString("N")[..8].ToUpper()
                 },
                 new Event
                 {
-                    Title = "Debate: AI in Education",
-                    Description = "Public debate on the role of artificial intelligence in education. Open to all.",
+                    Title = "Дебат: ИИ в образованието",
+                    Description = "Публичен дебат за ролята на изкуствения интелект в образованието. Открито за всички.",
                     StartDate = DateTime.UtcNow.AddDays(7),
-                    Location = "Hall 102",
+                    Location = "Зала 102",
                     MaxAttendees = 40,
                     ClubId = debateClub.Id,
                     AttendanceCode = Guid.NewGuid().ToString("N")[..8].ToUpper()
                 },
                 new Event
                 {
-                    Title = "Photography Walk Downtown",
-                    Description = "Meet in front of the school at 10:00 on Saturday. Bring your cameras/phones. We will explore the architecture.",
+                    Title = "Фото разходка в центъра",
+                    Description = "Срещаме се пред училището в 10:00 в събота. Вземете камери или телефони. Ще изследваме архитектурата.",
                     StartDate = DateTime.UtcNow.AddDays(10),
-                    Location = "In front of the school",
+                    Location = "Пред училището",
                     MaxAttendees = 0,
                     ClubId = clubs[2].Id
                 }
@@ -244,8 +260,8 @@ namespace SchoolClubs.Web.Data
                 {
                     new Announcement
                     {
-                        Title = "Welcome to the New School Year!",
-                        Content = "Club registration is open. Browse available clubs and sign up by October 15.",
+                        Title = "Добре дошли в новата учебна година!",
+                        Content = "Записването в клубове е отворено. Разгледайте наличните клубове и се запишете до 15 октомври.",
                         Priority = AnnouncementPriority.High,
                         IsPinned = true,
                         ClubId = programmingClub.Id,
@@ -253,8 +269,8 @@ namespace SchoolClubs.Web.Data
                     },
                     new Announcement
                     {
-                        Title = "Schedule Change This Week",
-                        Content = "Due to renovation of Room 301, Thursday's meeting will be in Room 205.",
+                        Title = "Промяна в графика тази седмица",
+                        Content = "Поради ремонт в кабинет 301, четвъртъшната среща ще се проведе в кабинет 205.",
                         Priority = AnnouncementPriority.Normal,
                         ClubId = programmingClub.Id,
                         AuthorId = leader.Id

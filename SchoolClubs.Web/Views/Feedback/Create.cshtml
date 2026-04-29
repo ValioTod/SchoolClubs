@@ -1,9 +1,9 @@
 @model SchoolClubs.Web.Models.ViewModels.FeedbackCreateViewModel
 @{
-    ViewData["Title"] = "Submit Feedback";
+    ViewData["Title"] = "Нов отзив";
 }
 
-<h3><i class="bi bi-chat-dots"></i> <span data-i18n="fb.createtitle">Submit Feedback</span></h3>
+<h3><i class="bi bi-chat-dots"></i> Изпрати отзив</h3>
 
 <div class="row">
     <div class="col-md-8">
@@ -31,9 +31,9 @@
             </div>
 
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-send"></i> <span data-i18n="fb.submit">Submit</span>
+                <i class="bi bi-send"></i> Изпрати
             </button>
-            <a asp-action="Index" class="btn btn-secondary ms-2" data-i18n="clubs.back">Back</a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Назад</a>
         </form>
     </div>
 </div>

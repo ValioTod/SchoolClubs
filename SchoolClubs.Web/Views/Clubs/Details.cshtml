@@ -5,14 +5,14 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Index" data-i18n="clubs.title">Клубове</a></li>
+        <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Index">Клубове</a></li>
         <li class="breadcrumb-item active">@Model.Club.Name</li>
     </ol>
 </nav>
 
 <div class="row">
     <div class="col-lg-8">
-        <div class="d-flex justify-content-between align-items-start mb-3 reveal">
+        <div class="d-flex justify-content-between align-items-start mb-3">
             <div>
                 <h2 class="fw-bold">@Model.Club.Name</h2>
                 <span class="badge bg-primary fs-6">@Model.Club.Category</span>
@@ -21,10 +21,10 @@
                 @if (Model.IsLeader || User.IsInRole("Admin"))
                 {
                     <a asp-action="Edit" asp-route-id="@Model.Club.Id" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-pencil"></i> <span data-i18n="clubs.edit">Редактирай</span>
+                        <i class="bi bi-pencil"></i> <span>Редактирай</span>
                     </a>
                     <a asp-controller="Profile" asp-action="Statistics" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-info btn-sm ms-1">
-                        <i class="bi bi-graph-up"></i> <span data-i18n="clubs.stats">Статистика</span>
+                        <i class="bi bi-graph-up"></i> <span>Статистика</span>
                     </a>
                     <a asp-controller="Profile" asp-action="ExportMembers" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-secondary btn-sm ms-1">
                         <i class="bi bi-download"></i> CSV
@@ -38,15 +38,15 @@
                 <p>@Model.Club.Description</p>
                 @if (Model.Club.MeetingSchedule != null)
                 {
-                    <p><i class="bi bi-clock"></i> <strong data-i18n="clubs.schedule">График:</strong> @Model.Club.MeetingSchedule</p>
+                    <p><i class="bi bi-clock"></i> <strong>График:</strong> @Model.Club.MeetingSchedule</p>
                 }
                 @if (Model.Club.MeetingLocation != null)
                 {
-                    <p><i class="bi bi-geo-alt"></i> <strong data-i18n="clubs.location">Място:</strong> @Model.Club.MeetingLocation</p>
+                    <p><i class="bi bi-geo-alt"></i> <strong>Място:</strong> @Model.Club.MeetingLocation</p>
                 }
                 @if (Model.Club.Leader != null)
                 {
-                    <p><i class="bi bi-person-badge"></i> <strong data-i18n="clubs.leader">Ръководител:</strong> @Model.Club.Leader.FullName</p>
+                    <p><i class="bi bi-person-badge"></i> <strong>Ръководител:</strong> @Model.Club.Leader.FullName</p>
                 }
             </div>
         </div>
@@ -59,7 +59,7 @@
                     <form asp-action="Leave" asp-route-id="@Model.Club.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-outline-danger">
-                            <i class="bi bi-box-arrow-right"></i> <span data-i18n="clubs.leave">Напусни клуба</span>
+                            <i class="bi bi-box-arrow-right"></i> <span>Напусни клуба</span>
                         </button>
                     </form>
                 }
@@ -68,20 +68,20 @@
                     <form asp-action="Join" asp-route-id="@Model.Club.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i> <span data-i18n="clubs.join">Запиши се</span>
+                            <i class="bi bi-person-plus"></i> <span>Запиши се</span>
                         </button>
                     </form>
                 }
                 else
                 {
-                    <button class="btn btn-secondary" disabled data-i18n="clubs.full">Клубът е пълен</button>
+                    <button class="btn btn-secondary" disabled>Клубът е пълен</button>
                 }
             </div>
         }
 
         @if (Model.UpcomingEvents.Any())
         {
-            <h4 data-i18n="clubs.upcomingevents">Предстоящи събития</h4>
+            <h4>Предстоящи събития</h4>
             <div class="list-group mb-4">
                 @foreach (var ev in Model.UpcomingEvents)
                 {
@@ -103,20 +103,20 @@
         {
             <div class="d-flex gap-2 mb-4">
                 <a asp-controller="Events" asp-action="Create" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-success btn-sm">
-                    <i class="bi bi-calendar-plus"></i> <span data-i18n="clubs.newevent">Ново събитие</span>
+                    <i class="bi bi-calendar-plus"></i> <span>Ново събитие</span>
                 </a>
                 <a asp-controller="Announcements" asp-action="Create" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-info btn-sm">
-                    <i class="bi bi-megaphone"></i> <span data-i18n="clubs.newannouncement">Нова обява</span>
+                    <i class="bi bi-megaphone"></i> <span>Нова обява</span>
                 </a>
                 <a asp-controller="Gallery" asp-action="Index" asp-route-clubId="@Model.Club.Id" class="btn btn-outline-warning btn-sm">
-                    <i class="bi bi-images"></i> <span data-i18n="clubs.gallery">Галерия</span>
+                    <i class="bi bi-images"></i> <span>Галерия</span>
                 </a>
             </div>
         }
 
         @if (Model.RecentAnnouncements.Any())
         {
-            <h4 data-i18n="clubs.recentann">Последни обяви</h4>
+            <h4>Последни обяви</h4>
             @foreach (var ann in Model.RecentAnnouncements)
             {
                 <div class="card mb-2 @(ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent ? "border-danger" : "")">
@@ -137,7 +137,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <i class="bi bi-people"></i> <span data-i18n="clubs.members">Членове</span> (@Model.MemberCount / @Model.Club.MaxMembers)
+                <i class="bi bi-people"></i> <span>Членове</span> (@Model.MemberCount / @Model.Club.MaxMembers)
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
@@ -149,11 +149,11 @@
                             </a>
                             @if (member.Role == SchoolClubs.Web.Models.MemberRole.President)
                             {
-                                <span class="badge bg-warning text-dark" data-i18n="clubs.president">Председател</span>
+                                <span class="badge bg-warning text-dark">Председател</span>
                             }
                             else if (member.Role == SchoolClubs.Web.Models.MemberRole.Moderator)
                             {
-                                <span class="badge bg-info" data-i18n="clubs.moderator">Модератор</span>
+                                <span class="badge bg-info">Модератор</span>
                             }
                         </li>
                     }
@@ -161,69 +161,12 @@
             </div>
         </div>
 
-        @if (Model.IsLeader && Model.PendingRequests.Any())
-        {
-            <div class="card mt-3 border-warning">
-                <div class="card-header bg-warning bg-opacity-10">
-                    <i class="bi bi-hourglass-split"></i> <span data-i18n="clubs.pendingRequests">Очаквани заявки</span> (@Model.PendingRequests.Count)
-                </div>
-                <div class="card-body p-0">
-                    <ul class="list-group list-group-flush">
-                        @foreach (var request in Model.PendingRequests)
-                        {
-                            <li class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@request.UserId" class="text-decoration-none fw-500">
-                                            @request.User.FullName
-                                        </a>
-                                        <small class="d-block text-muted">@request.User.Email</small>
-                                    </div>
-                                    <div class="d-flex gap-1">
-                                        <form asp-action="ApproveMember" asp-route-memberId="@request.Id" method="post" class="d-inline">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-sm btn-success" data-i18n="clubs.approve">Одобри</button>
-                                        </form>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal_@request.Id" data-i18n="clubs.reject">Отхвърли</button>
-                                    </div>
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
 
-            @foreach (var request in Model.PendingRequests)
-            {
-                <div class="modal fade" id="rejectModal_@request.Id" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" data-i18n="clubs.rejectRequest">Отхвърли заявка</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <form asp-action="RejectMember" asp-route-memberId="@request.Id" method="post">
-                                @Html.AntiForgeryToken()
-                                <div class="modal-body">
-                                    <p data-i18n="clubs.rejectReason">Причина (опционално):</p>
-                                    <textarea name="reason" class="form-control" rows="3" placeholder="Напиши причина..."></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="clubs.cancel">Отказ</button>
-                                    <button type="submit" class="btn btn-danger" data-i18n="clubs.rejectBtn">Отхвърли</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-
-        @if (Model.RecentPhotos.Any())
+@if (Model.RecentPhotos.Any())
         {
             <div class="card mt-3">
                 <div class="card-header">
-                    <i class="bi bi-images"></i> <span data-i18n="clubs.photos">Снимки</span>
+                    <i class="bi bi-images"></i> <span>Снимки</span>
                 </div>
                 <div class="card-body">
                     <div class="row g-1">
@@ -234,7 +177,7 @@
                             </div>
                         }
                     </div>
-                    <a asp-controller="Gallery" asp-action="Index" asp-route-clubId="@Model.Club.Id" class="btn btn-sm btn-link mt-2" data-i18n="clubs.viewall">
+                    <a asp-controller="Gallery" asp-action="Index" asp-route-clubId="@Model.Club.Id" class="btn btn-sm btn-link mt-2">
                         Виж всички
                     </a>
                 </div>

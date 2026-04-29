@@ -1,9 +1,9 @@
 @model SchoolClubs.Web.Models.ViewModels.ProfileEditViewModel
 @{
-    ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Редактирай профил";
 }
 
-<h3><i class="bi bi-pencil-square"></i> <span data-i18n="profile.edittitle">Edit Profile</span></h3>
+<h3><i class="bi bi-pencil-square"></i> Редактирай профила</h3>
 
 <div class="row">
     <div class="col-md-8">
@@ -45,19 +45,19 @@
             <div class="mb-3">
                 <label asp-for="Bio" class="form-label"></label>
                 <textarea asp-for="Bio" class="form-control" rows="3" maxlength="500"></textarea>
-                <small class="text-muted">Max 500 characters</small>
+                <small class="text-muted">Максимум 500 символа</small>
             </div>
 
             <div class="mb-3">
-                <label class="form-label" data-i18n="profile.picture">Profile Picture</label>
+                <label class="form-label">Профилна снимка</label>
                 <input type="file" name="profilePicture" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
-                <small class="text-muted">Max 2MB. JPG, PNG or WebP.</small>
+                <small class="text-muted">Макс. 2MB. JPG, PNG или WebP.</small>
             </div>
 
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-lg"></i> <span data-i18n="clubs.save">Save</span>
+                <i class="bi bi-check-lg"></i> Запази
             </button>
-            <a asp-action="Index" class="btn btn-secondary ms-2" data-i18n="clubs.cancel">Cancel</a>
+            <a asp-action="Index" class="btn btn-secondary ms-2">Отказ</a>
         </form>
     </div>
 </div>

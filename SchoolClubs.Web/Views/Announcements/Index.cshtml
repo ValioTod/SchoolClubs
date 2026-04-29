@@ -7,14 +7,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a asp-controller="Clubs" asp-action="Details" asp-route-id="@club?.Id">@club?.Name</a></li>
-        <li class="breadcrumb-item active" data-i18n="ann.title">Обяви</li>
+        <li class="breadcrumb-item active">Обяви</li>
     </ol>
 </nav>
 
 <div class="d-flex justify-content-between mb-3">
-    <h3 data-i18n="ann.title">Обяви</h3>
+    <h3>Обяви</h3>
     <a asp-action="Create" asp-route-clubId="@club?.Id" class="btn btn-info btn-sm">
-        <i class="bi bi-megaphone"></i> <span data-i18n="ann.new">Нова обява</span>
+        <i class="bi bi-megaphone"></i> <span>Нова обява</span>
     </a>
 </div>
 
@@ -30,11 +30,11 @@
                     }
                     @if (ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.Urgent)
                     {
-                        <span class="badge bg-danger" data-i18n="ann.urgent">Спешно</span>
+                        <span class="badge bg-danger">Спешно</span>
                     }
                     else if (ann.Priority == SchoolClubs.Web.Models.AnnouncementPriority.High)
                     {
-                        <span class="badge bg-warning text-dark" data-i18n="ann.important">Важно</span>
+                        <span class="badge bg-warning text-dark">Важно</span>
                     }
                     <h5 class="d-inline">@ann.Title</h5>
                 </div>
@@ -50,6 +50,6 @@
 {
     <div class="text-center py-5 text-muted">
         <i class="bi bi-megaphone display-3"></i>
-        <p class="mt-2" data-i18n="ann.none">Няма обяви за този клуб.</p>
+        <p class="mt-2">Няма обяви за този клуб.</p>
     </div>
 }

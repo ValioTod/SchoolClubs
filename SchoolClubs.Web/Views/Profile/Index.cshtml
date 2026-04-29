@@ -4,7 +4,7 @@
 }
 
 <div class="row">
-    <div class="col-md-4 text-center mb-4 reveal">
+    <div class="col-md-4 text-center mb-4">
         <div class="card border-0">
             <div class="card-body py-4">
                 <div class="mb-3">
@@ -32,7 +32,7 @@
                 @if (Model.IsOwnProfile)
                 {
                     <a asp-action="Edit" class="btn btn-outline-primary btn-sm mt-2">
-                        <i class="bi bi-pencil"></i> <span data-i18n="profile.edit">Edit Profile</span>
+                        <i class="bi bi-pencil"></i> <span data-i18n="profile.edit">Редактирай профила</span>
                     </a>
                 }
 
@@ -72,13 +72,13 @@
                                     @switch (m.Role)
                                     {
                                         case SchoolClubs.Web.Models.MemberRole.President:
-                                            <span class="badge bg-warning text-dark" data-i18n="clubs.president">Председател</span>
+                                            <span class="badge bg-warning text-dark">Председател</span>
                                             break;
                                         case SchoolClubs.Web.Models.MemberRole.Moderator:
-                                            <span class="badge bg-info" data-i18n="clubs.moderator">Модератор</span>
+                                            <span class="badge bg-info">Модератор</span>
                                             break;
                                         default:
-                                            <span class="badge bg-light text-dark" data-i18n="profile.member">Член</span>
+                                            <span class="badge bg-light text-dark">Член</span>
                                             break;
                                     }
                                     от @m.JoinedOn.ToString("dd.MM.yyyy")
@@ -91,7 +91,7 @@
         }
         else
         {
-            <p class="text-muted" data-i18n="profile.nomember">Не е член на нито един клуб.</p>
+            <p class="text-muted" data-i18n="profile.noClubs">Не е член на нито един клуб.</p>
         }
 
         <h4 class="mb-3" data-i18n="profile.awards">Награди</h4>
@@ -116,7 +116,7 @@
         }
         else
         {
-            <p class="text-muted" data-i18n="profile.noawards">Все още няма спечелени награди.</p>
+            <p class="text-muted" data-i18n="profile.noAwards">Все още няма спечелени награди.</p>
         }
     </div>
 </div>

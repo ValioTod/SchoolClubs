@@ -5,7 +5,7 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a asp-action="Index" data-i18n="events.title">Събития</a></li>
+        <li class="breadcrumb-item"><a asp-action="Index">Събития</a></li>
         <li class="breadcrumb-item active">@Model.Event.Title</li>
     </ol>
 </nav>
@@ -17,7 +17,7 @@
 
         @if (Model.Event.IsCancelled)
         {
-            <div class="alert alert-danger"><i class="bi bi-x-circle"></i> <span data-i18n="events.cancelled">Това събитие е отменено.</span></div>
+            <div class="alert alert-danger"><i class="bi bi-x-circle"></i> <span>Това събитие е отменено.</span></div>
         }
 
         <div class="card mb-4">
@@ -29,19 +29,19 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <p><i class="bi bi-calendar"></i> <strong data-i18n="events.start">Начало:</strong> @Model.Event.StartDate.ToString("dd.MM.yyyy HH:mm")</p>
+                        <p><i class="bi bi-calendar"></i> <strong>Начало:</strong> @Model.Event.StartDate.ToString("dd.MM.yyyy HH:mm")</p>
                         @if (Model.Event.EndDate != null)
                         {
-                            <p><i class="bi bi-calendar-check"></i> <strong data-i18n="events.end">Край:</strong> @Model.Event.EndDate.Value.ToString("dd.MM.yyyy HH:mm")</p>
+                            <p><i class="bi bi-calendar-check"></i> <strong>Край:</strong> @Model.Event.EndDate.Value.ToString("dd.MM.yyyy HH:mm")</p>
                         }
                     </div>
                     <div class="col-md-6">
                         @if (Model.Event.Location != null)
                         {
-                            <p><i class="bi bi-geo-alt"></i> <strong data-i18n="events.location">Място:</strong> @Model.Event.Location</p>
+                            <p><i class="bi bi-geo-alt"></i> <strong>Място:</strong> @Model.Event.Location</p>
                         }
                         <p>
-                            <i class="bi bi-people"></i> <strong data-i18n="events.signedup">Записани:</strong> @Model.AttendeeCount
+                            <i class="bi bi-people"></i> <strong>Записани:</strong> @Model.AttendeeCount
                             @if (Model.Event.MaxAttendees > 0)
                             {
                                 <span>/ @Model.Event.MaxAttendees</span>
@@ -60,21 +60,21 @@
                     <form asp-action="SignUp" asp-route-id="@Model.Event.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-circle"></i> <span data-i18n="events.signup">Запиши се</span>
+                            <i class="bi bi-check-circle"></i> <span>Запиши се</span>
                         </button>
                     </form>
                 }
                 else if (Model.IsSignedUp && !Model.HasAttended)
                 {
-                    <span class="badge bg-success fs-6 me-2" data-i18n="events.registered">Записан/а</span>
+                    <span class="badge bg-success fs-6 me-2">Записан/а</span>
                     <form asp-action="CancelSignUp" asp-route-id="@Model.Event.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-outline-danger btn-sm" data-i18n="events.cancelreg">Отказ</button>
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Отказ</button>
                     </form>
                 }
                 @if (Model.HasAttended)
                 {
-                    <span class="badge bg-info fs-6"><i class="bi bi-patch-check"></i> <span data-i18n="events.attended">Присъствал/а</span></span>
+                    <span class="badge bg-info fs-6"><i class="bi bi-patch-check"></i> <span>Присъствал/а</span></span>
                 }
             </div>
 
@@ -82,10 +82,10 @@
             {
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h6 data-i18n="events.checkin">Отбележи присъствие с код</h6>
+                        <h6>Отбележи присъствие с код</h6>
                         <form asp-action="CheckIn" asp-route-id="@Model.Event.Id" method="post" class="input-group">
                             @Html.AntiForgeryToken()
-                            <input type="text" name="code" class="form-control" placeholder="Въведи кода..." data-i18n-placeholder="events.entercode" maxlength="8" required />
+                            <input type="text" name="code" class="form-control" placeholder="Въведи кода..." maxlength="8" required />
                             <button type="submit" class="btn btn-info">
                                 <i class="bi bi-qr-code"></i> Потвърди
                             </button>
@@ -104,14 +104,14 @@
                             <form asp-action="CancelEvent" asp-route-id="@Model.Event.Id" method="post" class="d-inline" onsubmit="return confirm('Сигурни ли сте, че искате да отмените това събитие?')">
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-outline-danger">
-                                    <i class="bi bi-x-circle"></i> <span data-i18n="events.cancelevent">Отмени събитие</span>
+                                    <i class="bi bi-x-circle"></i> <span>Отмени събитие</span>
                                 </button>
                             </form>
                         }
                         else
                         {
                             <button type="button" class="btn btn-outline-danger" disabled title="Не можете да отмените събитие, което вече е свършило">
-                                <i class="bi bi-x-circle"></i> <span data-i18n="events.cancelevent">Отмени събитие</span>
+                                <i class="bi bi-x-circle"></i> <span>Отмени събитие</span>
                             </button>
                         }
                     }
@@ -120,7 +120,7 @@
                         <form asp-action="RestoreEvent" asp-route-id="@Model.Event.Id" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-outline-success">
-                                <i class="bi bi-arrow-counterclockwise"></i> <span data-i18n="events.restoreevent">Възстанови събитие</span>
+                                <i class="bi bi-arrow-counterclockwise"></i> <span>Възстанови събитие</span>
                             </button>
                         </form>
                     }
@@ -132,7 +132,7 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <i class="bi bi-people"></i> <span data-i18n="events.attendees">Записани участници</span>
+                <i class="bi bi-people"></i> <span>Записани участници</span>
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
@@ -142,14 +142,14 @@
                             <span>@att.User.FullName</span>
                             @if (att.HasAttended)
                             {
-                                <span class="badge bg-success" data-i18n="events.attendedshort">Присъствал</span>
+                                <span class="badge bg-success">Присъствал</span>
                             }
                         </li>
                     }
                 </ul>
                 @if (!Model.Event.Attendees.Any())
                 {
-                    <div class="text-center py-3 text-muted" data-i18n="events.nosignups">Все още няма записани.</div>
+                    <div class="text-center py-3 text-muted">Все още няма записани.</div>
                 }
             </div>
         </div>
