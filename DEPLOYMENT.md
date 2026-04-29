@@ -1,5 +1,31 @@
 # SchoolClubs Deployment Guide
 
+## 🚀 Quick Start: Recommended Deployment
+
+**For most users, we recommend [Azure App Service](./AZURE_DEPLOYMENT.md)** - it's the easiest and most cost-effective option for ASP.NET Core applications.
+
+### 30-Second Overview
+
+1. Create free Azure account (if needed)
+2. Run setup script: `.\scripts\azure-setup.ps1`
+3. Deploy: `dotnet publish` → `az webapp up`
+4. Visit: `https://schoolclubs-app.azurewebsites.net`
+
+👉 **[Full Azure Deployment Guide →](./AZURE_DEPLOYMENT.md)**
+
+---
+
+## Deployment Options Comparison
+
+| Platform | Cost | Setup Time | Difficulty | Best For |
+|----------|------|-----------|-----------|----------|
+| **Azure** | $13/month | 10 min | ⭐ Easy | ✅ Recommended - Native .NET |
+| Docker | Free-$50/mo | 15 min | ⭐⭐ Medium | Containers, scalability |
+| IIS | $50-200/yr | 30 min | ⭐⭐ Medium | Windows servers |
+| Linux | $5/month | 20 min | ⭐⭐ Medium | VPS, full control |
+
+---
+
 ## Overview
 
 This guide provides instructions for deploying the SchoolClubs application to production environments. The application can be deployed using Docker containers or directly to a Windows/Linux server.
@@ -26,7 +52,29 @@ This guide provides instructions for deploying the SchoolClubs application to pr
 
 ## Deployment Options
 
-### Option 1: Docker Deployment (Recommended)
+### Option 0: Azure App Service (Recommended) ⭐
+
+**See detailed instructions in [AZURE_DEPLOYMENT.md](./AZURE_DEPLOYMENT.md)**
+
+Benefits:
+- ✅ Native .NET/SQL Server support from Microsoft
+- ✅ Auto-scaling, monitoring, backups included
+- ✅ Free tier available ($13/month after)
+- ✅ GitHub Actions integration
+- ✅ SSL certificates included
+- ✅ Application Insights for analytics
+
+Quick setup:
+```powershell
+# 1. Run automated setup
+.\scripts\azure-setup.ps1
+
+# 2. Publish and deploy
+dotnet publish SchoolClubs.Web -c Release -o ./publish
+az webapp up --resource-group schoolclubs-rg --name schoolclubs-app --runtime DOTNETCORE:8.0
+```
+
+### Option 1: Docker Deployment (Scalable)
 
 #### Prerequisites
 - Docker installed
