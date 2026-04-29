@@ -107,6 +107,11 @@ namespace SchoolClubs.Web.Controllers
             return View("Dashboard", vm);
         }
 
+        public IActionResult Benefits()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int? statusCode = null)
         {

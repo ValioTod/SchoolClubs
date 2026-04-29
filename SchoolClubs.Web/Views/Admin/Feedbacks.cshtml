@@ -1,0 +1,98 @@
+@{
+    ViewData["Title"] = "Feedback Management";
+}
+
+<div class="mb-4">
+    <h3 class="mb-3">
+        <i class="bi bi-chat-dots me-2"></i>Feedback Management
+    </h3>
+    <p class="text-muted">Review and respond to user feedback</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Subject</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var feedback in ViewBag.Feedbacks)
+                    {
+                        <tr>
+                            <td>@feedback.Author?.FullName</td>
+                            <td><span class="badge bg-info">@feedback.Category</span></td>
+                            <td>
+                                <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#feedbackModal_@feedback.Id">
+                                    @feedback.Subject
+                                </button>
+                            </td>
+                            <td><small>@feedback.SubmittedOn.ToString("dd.MM.yyyy HH:mm")</small></td>
+                            <td>
+                                @if (feedback.IsResolved)
+                                {
+                                    <span class="badge bg-success">Resolved</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Pending</span>
+                                }
+                            </td>
+                            <td>
+                                @if (!feedback.IsResolved)
+                                {
+                                    <form asp-action="ResolveFeedback" asp-route-id="@feedback.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-success">Mark Resolved</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-action="UnresolveFeedback" asp-route-id="@feedback.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Mark Pending</button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+
+                        <!-- Feedback Details Modal -->
+                        <div class="modal fade" id="feedbackModal_@feedback.Id" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">@feedback.Subject</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>From:</strong> @feedback.Author?.FullName (@feedback.Author?.Email)</p>
+                                        <p><strong>Category:</strong> @feedback.Category</p>
+                                        <p><strong>Submitted:</strong> @feedback.SubmittedOn.ToString("dd.MM.yyyy HH:mm")</p>
+                                        <hr />
+                                        <p>@Html.Raw(feedback.Message.Replace(Environment.NewLine, "<br/>"))</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="@Url.Action("Index")" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+</div>

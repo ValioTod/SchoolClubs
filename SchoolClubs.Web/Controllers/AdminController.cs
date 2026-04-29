@@ -49,6 +49,76 @@ namespace SchoolClubs.Web.Controllers
             return View(vm);
         }
 
+        public async Task<IActionResult> Users()
+        {
+            var users = await _userManager.Users.OrderByDescending(u => u.DateJoined).ToListAsync();
+            ViewBag.Users = users;
+
+            // Get roles for each user
+            var userRoles = new Dictionary<string, List<string>>();
+            foreach (var user in users)
+            {
+                var roles = (await _userManager.GetRolesAsync(user)).ToList();
+                userRoles[user.Id] = roles;
+            }
+            ViewBag.UserRoles = userRoles;
+
+            return View();
+        }
+
+        public async Task<IActionResult> Clubs()
+        {
+            var clubs = await _db.Clubs
+                .Include(c => c.Leader)
+                .Include(c => c.Members)
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+            ViewBag.Clubs = clubs;
+
+            return View();
+        }
+
+        public async Task<IActionResult> Feedbacks()
+        {
+            var feedbacks = await _db.Feedbacks
+                .Include(f => f.Author)
+                .OrderByDescending(f => f.SubmittedOn)
+                .ToListAsync();
+            ViewBag.Feedbacks = feedbacks;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResolveFeedback(int id)
+        {
+            var feedback = await _db.Feedbacks.FindAsync(id);
+            if (feedback == null) return NotFound();
+
+            feedback.IsResolved = true;
+            _db.Feedbacks.Update(feedback);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Feedback marked as resolved.";
+            return RedirectToAction(nameof(Feedbacks));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnresolveFeedback(int id)
+        {
+            var feedback = await _db.Feedbacks.FindAsync(id);
+            if (feedback == null) return NotFound();
+
+            feedback.IsResolved = false;
+            _db.Feedbacks.Update(feedback);
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Feedback marked as pending.";
+            return RedirectToAction(nameof(Feedbacks));
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleClub(int id)
@@ -105,9 +175,23 @@ namespace SchoolClubs.Web.Controllers
 
             var currentRoles = await _userManager.GetRolesAsync(user);
             await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            await _userManager.AddToRoleAsync(user, role);
+            var result = await _userManager.AddToRoleAsync(user, role);
 
-            TempData["Success"] = $"Role changed to {role}.";
+            if (!result.Succeeded)
+            {
+                TempData["Error"] = $"Грешка при промяна на роля.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // If changing the current user's role, refresh the authentication cookie
+            var currentUserId = _userManager.GetUserId(User);
+            if (userId == currentUserId)
+            {
+                var signInManager = HttpContext.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
+                await signInManager.RefreshSignInAsync(user);
+            }
+
+            TempData["Success"] = $"Роля променена на {role}.";
             return RedirectToAction(nameof(Index));
         }
     }

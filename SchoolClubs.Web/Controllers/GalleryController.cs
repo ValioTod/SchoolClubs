@@ -100,11 +100,15 @@ namespace SchoolClubs.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            var galleryPhoto = await _db.GalleryPhotos.FindAsync(id);
+            var galleryPhoto = await _db.GalleryPhotos.Include(p => p.Club).FirstOrDefaultAsync(p => p.Id == id);
             if (galleryPhoto == null) return NotFound();
 
             var userId = _userManager.GetUserId(User);
-            if (galleryPhoto.UploadedById != userId && !User.IsInRole("Admin"))
+            var isUploader = galleryPhoto.UploadedById == userId;
+            var isClubLeader = galleryPhoto.Club.LeaderId == userId;
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isUploader && !isClubLeader && !isAdmin)
                 return Forbid();
 
             var physicalPath = Path.Combine(_env.WebRootPath, galleryPhoto.FilePath.TrimStart('/'));
@@ -115,6 +119,7 @@ namespace SchoolClubs.Web.Controllers
             _db.GalleryPhotos.Remove(galleryPhoto);
             await _db.SaveChangesAsync();
 
+            TempData["Success"] = "Снимката е изтрита.";
             return RedirectToAction(nameof(Index), new { clubId });
         }
     }

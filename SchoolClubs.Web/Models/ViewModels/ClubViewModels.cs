@@ -42,6 +42,7 @@ namespace SchoolClubs.Web.Models.ViewModels
         public List<Event> UpcomingEvents { get; set; } = new();
         public List<Announcement> RecentAnnouncements { get; set; } = new();
         public List<GalleryPhoto> RecentPhotos { get; set; } = new();
+        public List<ClubMembership> PendingRequests { get; set; } = new();
     }
 
     public class ClubListViewModel

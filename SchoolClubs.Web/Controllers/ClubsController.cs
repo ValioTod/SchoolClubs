@@ -64,13 +64,21 @@ namespace SchoolClubs.Web.Controllers
             if (club == null) return NotFound();
 
             var userId = _userManager.GetUserId(User);
+            var isLeader = club.LeaderId == userId;
+            var isAdmin = User.IsInRole("Admin");
+
+            // Check if club is active - if not, only allow leader and admin to view
+            if (!club.IsActive && !isLeader && !isAdmin)
+            {
+                return NotFound(); // Pretend it doesn't exist for non-authorized users
+            }
 
             var vm = new ClubDetailsViewModel
             {
                 Club = club,
-                IsMember = club.Members.Any(m => m.UserId == userId),
-                IsLeader = club.LeaderId == userId,
-                MemberCount = club.Members.Count,
+                IsMember = club.Members.Any(m => m.UserId == userId && m.Status == MembershipStatus.Active),
+                IsLeader = isLeader,
+                MemberCount = club.Members.Count(m => m.Status == MembershipStatus.Active),
                 UpcomingEvents = await _db.Events
                     .Where(e => e.ClubId == id && e.StartDate > DateTime.UtcNow && !e.IsCancelled)
                     .OrderBy(e => e.StartDate)
@@ -85,7 +93,10 @@ namespace SchoolClubs.Web.Controllers
                     .Where(p => p.ClubId == id)
                     .OrderByDescending(p => p.UploadedOn)
                     .Take(8)
-                    .ToListAsync()
+                    .ToListAsync(),
+                PendingRequests = isLeader 
+                    ? club.Members.Where(m => m.Status == MembershipStatus.Pending).ToList()
+                    : new List<ClubMembership>()
             };
 
             return View(vm);
@@ -183,29 +194,72 @@ namespace SchoolClubs.Web.Controllers
             var club = await _db.Clubs.Include(c => c.Members).FirstOrDefaultAsync(c => c.Id == id);
             if (club == null) return NotFound();
 
-            if (club.Members.Any(m => m.UserId == user.Id))
+            // Check if user already has any membership (pending or active)
+            if (club.Members.Any(m => m.UserId == user.Id && m.Status != MembershipStatus.Rejected))
             {
-                TempData["Error"] = "Вече сте член на този клуб.";
+                TempData["Error"] = "Вече сте подали заявка или сте член на този клуб.";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
-            if (club.Members.Count >= club.MaxMembers)
+            var activeMembers = club.Members.Count(m => m.Status == MembershipStatus.Active);
+            if (activeMembers >= club.MaxMembers)
             {
                 TempData["Error"] = "Клубът е пълен.";
                 return RedirectToAction(nameof(Details), new { id });
             }
 
+            // Create pending membership
             _db.ClubMemberships.Add(new ClubMembership
             {
                 UserId = user.Id,
-                ClubId = id
+                ClubId = id,
+                Status = MembershipStatus.Pending
             });
             await _db.SaveChangesAsync();
 
-            await _achievementService.CheckAndAwardAchievements(user.Id);
-
-            TempData["Success"] = "Успешно се записахте в клуба!";
+            TempData["Success"] = "Заявката за присъединяване е изпратена. Ръководителят на клуба ще я одобри или отхвърли.";
             return RedirectToAction(nameof(Details), new { id });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveMember(int memberId)
+        {
+            var membership = await _db.ClubMemberships.Include(m => m.Club).FirstOrDefaultAsync(m => m.Id == memberId);
+            if (membership == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (membership.Club.LeaderId != userId && !User.IsInRole("Admin"))
+                return Forbid();
+
+            membership.Status = MembershipStatus.Active;
+            await _db.SaveChangesAsync();
+
+            await _achievementService.CheckAndAwardAchievements(membership.UserId);
+
+            TempData["Success"] = "Членството е одобрено.";
+            return RedirectToAction(nameof(Details), new { id = membership.ClubId });
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RejectMember(int memberId, string? reason = null)
+        {
+            var membership = await _db.ClubMemberships.Include(m => m.Club).FirstOrDefaultAsync(m => m.Id == memberId);
+            if (membership == null) return NotFound();
+
+            var userId = _userManager.GetUserId(User);
+            if (membership.Club.LeaderId != userId && !User.IsInRole("Admin"))
+                return Forbid();
+
+            membership.Status = MembershipStatus.Rejected;
+            membership.ApprovalNotes = reason;
+            await _db.SaveChangesAsync();
+
+            TempData["Success"] = "Заявката е отхвърлена.";
+            return RedirectToAction(nameof(Details), new { id = membership.ClubId });
         }
 
         [HttpPost]
@@ -215,7 +269,7 @@ namespace SchoolClubs.Web.Controllers
         {
             var userId = _userManager.GetUserId(User);
             var membership = await _db.ClubMemberships
-                .FirstOrDefaultAsync(m => m.UserId == userId && m.ClubId == id);
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.ClubId == id && m.Status == MembershipStatus.Active);
 
             if (membership == null)
             {

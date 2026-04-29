@@ -99,19 +99,28 @@
                 <div class="mb-4">
                     @if (!Model.Event.IsCancelled)
                     {
-                        <form asp-action="CancelEvent" asp-route-id="@Model.Event.Id" method="post" class="d-inline" onsubmit="return confirm('Cancel this event?')">
-                            @Html.AntiForgeryToken()
-                            <button type="submit" class="btn btn-outline-danger">
-                                <i class="bi bi-x-circle"></i> <span data-i18n="events.cancelevent">Cancel Event</span>
+                        @if (Model.Event.StartDate > DateTime.UtcNow)
+                        {
+                            <form asp-action="CancelEvent" asp-route-id="@Model.Event.Id" method="post" class="d-inline" onsubmit="return confirm('Сигурни ли сте, че искате да отмените това събитие?')">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-x-circle"></i> <span data-i18n="events.cancelevent">Отмени събитие</span>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-outline-danger" disabled title="Не можете да отмените събитие, което вече е свършило">
+                                <i class="bi bi-x-circle"></i> <span data-i18n="events.cancelevent">Отмени събитие</span>
                             </button>
-                        </form>
+                        }
                     }
                     else
                     {
                         <form asp-action="RestoreEvent" asp-route-id="@Model.Event.Id" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
                             <button type="submit" class="btn btn-outline-success">
-                                <i class="bi bi-arrow-counterclockwise"></i> <span data-i18n="events.restoreevent">Restore Event</span>
+                                <i class="bi bi-arrow-counterclockwise"></i> <span data-i18n="events.restoreevent">Възстанови събитие</span>
                             </button>
                         </form>
                     }

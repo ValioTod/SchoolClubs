@@ -441,8 +441,47 @@ document.addEventListener('DOMContentLoaded', function () {
         'footer.links': { bg: 'Навигация', en: 'Navigation' },
         'footer.home': { bg: 'Начало', en: 'Home' },
         'footer.tech': { bg: 'Технологии', en: 'Technologies' },
+        'footer.contact': { bg: 'Контакти', en: 'Contact' },
+        'footer.email': { bg: 'Email: support@schoolclubs.edu', en: 'Email: support@schoolclubs.edu' },
+        'footer.phone': { bg: 'Телефон: +359 (0) 2 XXX XXXX', en: 'Phone: +359 (0) 2 XXX XXXX' },
+        'footer.location': { bg: 'Място: България', en: 'Location: Bulgaria' },
         // Landing extras
-        'landing.popularsub': { bg: 'Най-активните клубове в училището', en: 'The most active clubs in the school' }
+        'landing.popularsub': { bg: 'Най-активните клубове в училището', en: 'The most active clubs in the school' },
+        // Auth pages
+        'auth.login': { bg: 'Вход в профил', en: 'Sign In' },
+        'auth.loginDesc': { bg: 'Влезте в своя профил на SchoolClubs', en: 'Sign in to your SchoolClubs account' },
+        'auth.register': { bg: 'Регистрация', en: 'Register' },
+        'auth.registerDesc': { bg: 'Присъедини се към SchoolClubs комюнитета', en: 'Join the SchoolClubs community' },
+        'auth.loginBtn': { bg: 'Вход', en: 'Sign In' },
+        'auth.registerBtn': { bg: 'Регистрирай се', en: 'Register' },
+        'auth.rememberMe': { bg: 'Запомни ме', en: 'Remember Me' },
+        'auth.noAccount': { bg: 'Нямаш акаунт?', en: 'Don\'t have an account?' },
+        'auth.registerLink': { bg: 'Регистрирай се', en: 'Register' },
+        'auth.haveAccount': { bg: 'Вече имаш акаунт?', en: 'Already have an account?' },
+        'auth.loginLink': { bg: 'Влез', en: 'Sign In' },
+        'auth.guestInfo': { bg: 'Можеш да разглеждаш клубовете без регистрация.', en: 'You can browse clubs without registration.' },
+        'auth.browseAsGuest': { bg: 'Разглеждай като гост', en: 'Browse as Guest' },
+        'auth.termsAgree': { bg: 'Регистрирайки се, приемаш нашите условия за ползване.', en: 'By registering, you agree to our terms of use.' },
+        // Form
+        'form.email': { bg: 'Email', en: 'Email' },
+        'form.password': { bg: 'Парола', en: 'Password' },
+        'form.confirmPassword': { bg: 'Потвърди парола', en: 'Confirm Password' },
+        'form.fullName': { bg: 'Пълно име', en: 'Full Name' },
+        'form.passwordHint': { bg: 'Поне 6 символа', en: 'At least 6 characters' },
+        // Club approval
+        'clubs.pendingRequests': { bg: 'Очаквани заявки', en: 'Pending Requests' },
+        'clubs.approve': { bg: 'Одобри', en: 'Approve' },
+        'clubs.reject': { bg: 'Отхвърли', en: 'Reject' },
+        'clubs.rejectRequest': { bg: 'Отхвърли заявка', en: 'Reject Request' },
+        'clubs.rejectReason': { bg: 'Причина (опционална):', en: 'Reason (optional):' },
+        'clubs.rejectBtn': { bg: 'Отхвърли', en: 'Reject' },
+        // Gallery
+        'gallery.title': { bg: 'Галерия', en: 'Gallery' },
+        'gallery.photo': { bg: 'Снимка', en: 'Photo' },
+        'gallery.desc': { bg: 'Описание', en: 'Description' },
+        'gallery.captionph': { bg: 'Кратко описание...', en: 'Brief description...' },
+        'gallery.upload': { bg: 'Качи', en: 'Upload' },
+        'gallery.none': { bg: 'Все още няма снимки. Бъдете първият!', en: 'No photos yet. Be the first!' }
     };
 
     var langSwitcher = document.getElementById('langSwitcher');

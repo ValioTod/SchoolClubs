@@ -40,9 +40,22 @@
 <div class="row">
     @foreach (var photo in Model)
     {
+        var isUploader = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == photo.UploadedById;
+        var isClubLeader = club?.LeaderId == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var canDelete = isUploader || isClubLeader || User.IsInRole("Admin");
+
         <div class="col-md-3 col-sm-4 col-6 mb-3">
-            <div class="card gallery-card">
+            <div class="card gallery-card position-relative">
                 <img src="@photo.FilePath" class="card-img-top" alt="@photo.Caption" style="height: 200px; object-fit: cover;" />
+                @if (canDelete)
+                {
+                    <form asp-action="Delete" asp-route-id="@photo.Id" method="post" class="position-absolute top-0 end-0 m-2">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger rounded-circle p-1" title="Изтрий снимка" onclick="return confirm('Сигурен ли си?')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                }
                 <div class="card-body py-2">
                     @if (photo.Caption != null)
                     {

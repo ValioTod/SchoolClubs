@@ -1,13 +1,14 @@
 @model SchoolClubs.Web.Models.ViewModels.EventCreateViewModel
 @{
     ViewData["Title"] = "Ново събитие";
+    var minDateTime = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm");
 }
 
 <h2 data-i18n="events.createtitle">Създаване на събитие</h2>
 
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" id="eventForm">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="ClubId" />
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
@@ -26,12 +27,17 @@
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label asp-for="StartDate" class="form-label"></label>
-                    <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                    <input asp-for="StartDate" class="form-control" type="datetime-local" id="startDate" 
+                           min="@minDateTime" required />
                     <span asp-validation-for="StartDate" class="text-danger"></span>
+                    <small class="text-muted d-block mt-1">Събитието трябва да е в бъдещето</small>
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="EndDate" class="form-label"></label>
-                    <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                    <input asp-for="EndDate" class="form-control" type="datetime-local" id="endDate" 
+                           min="@minDateTime" />
+                    <span id="endDateError" class="text-danger" style="display:none;">Крайната дата трябва да е след началната</span>
+                    <small class="text-muted d-block mt-1">Опционално. Трябва да е след началната дата</small>
                 </div>
             </div>
 
@@ -42,7 +48,7 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="MaxAttendees" class="form-label"></label>
-                    <input asp-for="MaxAttendees" class="form-control" type="number" />
+                    <input asp-for="MaxAttendees" class="form-control" type="number" min="0" />
                 </div>
             </div>
 
@@ -53,3 +59,71 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var startDateInput = document.getElementById('startDate');
+    var endDateInput = document.getElementById('endDate');
+    var endDateError = document.getElementById('endDateError');
+    var eventForm = document.getElementById('eventForm');
+
+    // Validate on form submit
+    eventForm.addEventListener('submit', function (e) {
+        // Check if end date is before start date
+        if (endDateInput.value && startDateInput.value) {
+            var startDate = new Date(startDateInput.value);
+            var endDate = new Date(endDateInput.value);
+            
+            if (endDate <= startDate) {
+                e.preventDefault();
+                endDateError.style.display = 'block';
+                endDateInput.classList.add('is-invalid');
+                endDateInput.focus();
+                return false;
+            }
+        }
+
+        // Check if start date is in the past
+        var now = new Date();
+        var startDate = new Date(startDateInput.value);
+        
+        if (startDate < now) {
+            e.preventDefault();
+            alert('Събитието трябва да е в бъдещето!');
+            startDateInput.focus();
+            return false;
+        }
+    });
+
+    // Real-time validation for end date
+    function validateEndDate() {
+        if (endDateInput.value && startDateInput.value) {
+            var startDate = new Date(startDateInput.value);
+            var endDate = new Date(endDateInput.value);
+            
+            if (endDate <= startDate) {
+                endDateError.style.display = 'block';
+                endDateInput.classList.add('is-invalid');
+            } else {
+                endDateError.style.display = 'none';
+                endDateInput.classList.remove('is-invalid');
+            }
+        }
+    }
+
+    startDateInput.addEventListener('change', validateEndDate);
+    endDateInput.addEventListener('change', validateEndDate);
+
+    // Set minimum end date when start date changes
+    startDateInput.addEventListener('change', function () {
+        if (this.value) {
+            endDateInput.min = this.value;
+        }
+    });
+});
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

@@ -72,6 +72,17 @@ namespace SchoolClubs.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EventCreateViewModel vm)
         {
+            // Server-side date validation
+            if (vm.StartDate < DateTime.UtcNow)
+            {
+                ModelState.AddModelError(nameof(vm.StartDate), "Събитието трябва да е в бъдещето");
+            }
+
+            if (vm.EndDate.HasValue && vm.EndDate <= vm.StartDate)
+            {
+                ModelState.AddModelError(nameof(vm.EndDate), "Крайната дата трябва да е след началната");
+            }
+
             if (!ModelState.IsValid) return View(vm);
 
             var userId = _userManager.GetUserId(User);
@@ -208,10 +219,17 @@ namespace SchoolClubs.Web.Controllers
             if (ev.Club.LeaderId != userId && !User.IsInRole("Admin"))
                 return Forbid();
 
+            // Prevent cancellation of past events
+            if (ev.StartDate < DateTime.UtcNow)
+            {
+                TempData["Error"] = "Не можете да отмените събитие, което вече е свършило.";
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
             ev.IsCancelled = true;
             await _db.SaveChangesAsync();
 
-            TempData["Success"] = "Event cancelled.";
+            TempData["Success"] = "Събитието е отменено.";
             return RedirectToAction(nameof(Details), new { id });
         }
 
@@ -230,7 +248,7 @@ namespace SchoolClubs.Web.Controllers
             ev.IsCancelled = false;
             await _db.SaveChangesAsync();
 
-            TempData["Success"] = "Event restored.";
+            TempData["Success"] = "Събитието е възстановено.";
             return RedirectToAction(nameof(Details), new { id });
         }
     }

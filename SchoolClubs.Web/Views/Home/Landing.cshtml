@@ -13,7 +13,10 @@
         <a asp-controller="Clubs" asp-action="Index" class="btn btn-light btn-lg px-4">
             <i class="bi bi-search me-1"></i> <span data-i18n="landing.browse">Разгледай клубовете</span>
         </a>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-light btn-lg px-4">
+        <a asp-controller="Home" asp-action="Benefits" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-star me-1"></i> <span>Предимства</span>
+        </a>
+        <a asp-controller="Auth" asp-action="Register" class="btn btn-outline-light btn-lg px-4">
             <i class="bi bi-person-plus me-1"></i> <span data-i18n="landing.register">Регистрация</span>
         </a>
     </div>

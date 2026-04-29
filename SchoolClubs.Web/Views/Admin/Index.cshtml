@@ -7,22 +7,26 @@
 
 <div class="row mb-4 mt-3">
     <div class="col-md-2">
-        <div class="card text-center stat-card border-primary">
-            <div class="card-body">
-                <i class="bi bi-people text-primary fs-3"></i>
-                <h4>@Model.TotalUsers</h4>
-                <small class="text-muted">Users</small>
+        <a asp-action="Users" class="text-decoration-none">
+            <div class="card text-center stat-card border-primary cursor-pointer">
+                <div class="card-body">
+                    <i class="bi bi-people text-primary fs-3"></i>
+                    <h4>@Model.TotalUsers</h4>
+                    <small class="text-muted">Users</small>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-2">
-        <div class="card text-center stat-card border-success">
-            <div class="card-body">
-                <i class="bi bi-collection text-success fs-3"></i>
-                <h4>@Model.TotalClubs</h4>
-                <small class="text-muted">Clubs</small>
+        <a asp-action="Clubs" class="text-decoration-none">
+            <div class="card text-center stat-card border-success cursor-pointer">
+                <div class="card-body">
+                    <i class="bi bi-collection text-success fs-3"></i>
+                    <h4>@Model.TotalClubs</h4>
+                    <small class="text-muted">Clubs</small>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-2">
         <div class="card text-center stat-card border-info">
@@ -43,22 +47,26 @@
         </div>
     </div>
     <div class="col-md-2">
-        <div class="card text-center stat-card border-warning">
-            <div class="card-body">
-                <i class="bi bi-chat-dots text-warning fs-3"></i>
-                <h4>@Model.TotalFeedbacks</h4>
-                <small class="text-muted">Feedback</small>
+        <a asp-action="Feedbacks" class="text-decoration-none">
+            <div class="card text-center stat-card border-warning cursor-pointer">
+                <div class="card-body">
+                    <i class="bi bi-chat-dots text-warning fs-3"></i>
+                    <h4>@Model.TotalFeedbacks</h4>
+                    <small class="text-muted">Feedback</small>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
     <div class="col-md-2">
-        <div class="card text-center stat-card border-danger">
-            <div class="card-body">
-                <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
-                <h4>@Model.UnresolvedFeedbacks</h4>
-                <small class="text-muted">Unresolved</small>
+        <a asp-action="Feedbacks" class="text-decoration-none">
+            <div class="card text-center stat-card border-danger cursor-pointer">
+                <div class="card-body">
+                    <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
+                    <h4>@Model.UnresolvedFeedbacks</h4>
+                    <small class="text-muted">Unresolved</small>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
 </div>
 
@@ -202,11 +210,15 @@
                     @foreach (var fb in Model.RecentFeedbacks)
                     {
                         <div class="mb-3 p-2 border rounded @(!fb.IsResolved ? "border-warning" : "")">
-                            <div class="d-flex justify-content-between">
-                                <strong>@fb.Subject</strong>
-                                <span class="badge @(fb.IsResolved ? "bg-success" : "bg-warning text-dark")">
-                                    @(fb.IsResolved ? "Resolved" : "Pending")
-                                </span>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <strong>@fb.Subject</strong>
+                                    <br />
+                                    <span class="badge bg-info me-2">@fb.Category</span>
+                                    <span class="badge @(fb.IsResolved ? "bg-success" : "bg-warning text-dark")">
+                                        @(fb.IsResolved ? "Resolved" : "Pending")
+                                    </span>
+                                </div>
                             </div>
                             <small class="text-muted">@fb.Author.FullName — @fb.SubmittedOn.ToString("dd.MM.yyyy")</small>
                             <p class="mb-1 small">@fb.Message</p>

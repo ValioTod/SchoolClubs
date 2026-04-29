@@ -1,0 +1,81 @@
+@{
+    ViewData["Title"] = "Clubs Management";
+}
+
+<div class="mb-4">
+    <h3 class="mb-3">
+        <i class="bi bi-collection me-2"></i>Clubs Management
+    </h3>
+    <p class="text-muted">Manage clubs, activate/deactivate, and view statistics</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Club Name</th>
+                        <th>Leader</th>
+                        <th>Members</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var club in ViewBag.Clubs)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Clubs" asp-action="Details" asp-route-id="@club.Id" class="text-decoration-none">
+                                    @club.Name
+                                </a>
+                            </td>
+                            <td>@club.Leader?.FullName</td>
+                            <td>@club.Members.Count / @club.MaxMembers</td>
+                            <td><span class="badge bg-secondary">@club.Category</span></td>
+                            <td>
+                                @if (club.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="ToggleClub" asp-route-id="@club.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm @(club.IsActive ? "btn-warning" : "btn-success")">
+                                        @if (club.IsActive)
+                                        {
+                                            <span><i class="bi bi-x-circle me-1"></i>Deactivate</span>
+                                        }
+                                        else
+                                        {
+                                            <span><i class="bi bi-check-circle me-1"></i>Activate</span>
+                                        }
+                                    </button>
+                                </form>
+                                <form asp-action="DeleteClub" asp-route-id="@club.Id" method="post" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i>Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a href="@Url.Action("Index")" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+</div>

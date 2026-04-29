@@ -23,8 +23,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.LoginPath = "/Auth/Login";
+    options.AccessDeniedPath = "/Home/Forbidden";
 });
 
 builder.Services.AddScoped<AchievementService>();

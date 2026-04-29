@@ -1,0 +1,77 @@
+@model SchoolClubs.Web.Controllers.LoginModel
+
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <i class="bi bi-mortarboard-fill" style="font-size: 3rem; color: #fbbf24;"></i>
+                        <h2 class="mt-3 fw-bold" data-i18n="auth.login">Вход в профил</h2>
+                        <p class="text-muted" data-i18n="auth.loginDesc">Влезте в своя профил на SchoolClubs</p>
+                    </div>
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <div>@error.ErrorMessage</div>
+                            }
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form method="post" asp-action="Login">
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-500" data-i18n="form.email">Email</label>
+                            <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="user@example.com" required>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-500" data-i18n="form.password">Парола</label>
+                            <input asp-for="Password" type="password" class="form-control form-control-lg" placeholder="••••••" required>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4 form-check">
+                            <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe" data-i18n="auth.rememberMe">
+                                Запомни ме
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-600 mb-3" data-i18n="auth.loginBtn">Вход</button>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted mb-0">
+                            <span data-i18n="auth.noAccount">Нямаш акаунт?</span>
+                            <a href="@Url.Action("Register", "Auth")" class="text-primary fw-600" data-i18n="auth.registerLink">Регистрирай се</a>
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <p class="text-center text-muted small mb-0" data-i18n="auth.guestInfo">
+                            Можеш да разглеждаш клубовете без регистрация.
+                        </p>
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-secondary btn-sm w-100 mt-2" data-i18n="auth.browseAsGuest">
+                            Разглеждай като гост
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -43,6 +43,23 @@ namespace SchoolClubs.Web.Data
                     await userManager.AddToRoleAsync(admin, "Admin");
             }
 
+            // Create Teacher user
+            if (await userManager.FindByEmailAsync("teacher@schoolclubs.bg") == null)
+            {
+                var teacher = new ApplicationUser
+                {
+                    UserName = "teacher@schoolclubs.bg",
+                    Email = "teacher@schoolclubs.bg",
+                    FullName = "Prof. Maria Nikolova",
+                    Grade = 0,
+                    GradeSection = "Teacher",
+                    EmailConfirmed = true
+                };
+                var result = await userManager.CreateAsync(teacher, "Teacher123!");
+                if (result.Succeeded)
+                    await userManager.AddToRoleAsync(teacher, "Teacher");
+            }
+
             var studentEmails = new[]
             {
                 ("ivan.petrov@school.bg", "Ivan Petrov", 10, "A"),

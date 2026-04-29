@@ -15,6 +15,10 @@ namespace SchoolClubs.Web.Models
         public DateTime JoinedOn { get; set; } = DateTime.UtcNow;
 
         public MemberRole Role { get; set; } = MemberRole.Member;
+        
+        public MembershipStatus Status { get; set; } = MembershipStatus.Active;
+        
+        public string? ApprovalNotes { get; set; }
     }
 
     public enum MemberRole
@@ -22,5 +26,13 @@ namespace SchoolClubs.Web.Models
         Member = 0,
         Moderator = 1,
         President = 2
+    }
+    
+    public enum MembershipStatus
+    {
+        Pending = 0,
+        Active = 1,
+        Rejected = 2,
+        Inactive = 3
     }
 }

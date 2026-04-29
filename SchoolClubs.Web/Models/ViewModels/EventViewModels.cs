@@ -14,15 +14,18 @@ namespace SchoolClubs.Web.Models.ViewModels
 
         [Required(ErrorMessage = "Началната дата е задължителна")]
         [Display(Name = "Начало")]
+        [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; } = DateTime.Now.AddDays(1);
 
         [Display(Name = "Край")]
+        [DataType(DataType.DateTime)]
         public DateTime? EndDate { get; set; }
 
         [Display(Name = "Локация")]
         public string? Location { get; set; }
 
         [Display(Name = "Макс. участници (0 = без лимит)")]
+        [Range(0, int.MaxValue, ErrorMessage = "Броят на участниците трябва да е положен")]
         public int MaxAttendees { get; set; } = 0;
 
         public int ClubId { get; set; }

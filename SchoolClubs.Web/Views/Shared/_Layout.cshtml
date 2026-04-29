@@ -78,10 +78,10 @@
                     else
                     {
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login" data-i18n="nav.login">Вход</a>
+                            <a class="nav-link" asp-controller="Auth" asp-action="Login" data-i18n="nav.login">Вход</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn btn-sm btn-outline-light ms-2 px-3" asp-area="Identity" asp-page="/Account/Register" data-i18n="nav.register">Регистрация</a>
+                            <a class="nav-link btn btn-sm btn-outline-light ms-2 px-3" asp-controller="Auth" asp-action="Register" data-i18n="nav.register">Регистрация</a>
                         </li>
                     }
                 </ul>
@@ -123,14 +123,12 @@
                     </ul>
                 </div>
                 <div class="col-md-4 mb-3">
-                    <h6 class="fw-bold mb-3" data-i18n="footer.tech">Технологии</h6>
-                    <div class="d-flex flex-wrap gap-2">
-                        <span class="badge bg-secondary">ASP.NET Core 8.0</span>
-                        <span class="badge bg-secondary">Entity Framework</span>
-                        <span class="badge bg-secondary">SQL Server</span>
-                        <span class="badge bg-secondary">Bootstrap 5.3</span>
-                        <span class="badge bg-secondary">xUnit</span>
-                    </div>
+                    <h6 class="fw-bold mb-3" data-i18n="footer.contact">Контакти</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-envelope me-2"></i><span data-i18n="footer.email">Email: support@schoolclubs.edu</span></li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i><span data-i18n="footer.phone">Телефон: +359 (0) 2 XXX XXXX</span></li>
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i><span data-i18n="footer.location">Място: България</span></li>
+                    </ul>
                 </div>
             </div>
             <hr style="border-color: rgba(255,255,255,0.1)" />

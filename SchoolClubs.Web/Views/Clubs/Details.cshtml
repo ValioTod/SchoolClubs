@@ -58,7 +58,7 @@
                 {
                     <form asp-action="Leave" asp-route-id="@Model.Club.Id" method="post" class="d-inline">
                         @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Сигурни ли сте?')">
+                        <button type="submit" class="btn btn-outline-danger">
                             <i class="bi bi-box-arrow-right"></i> <span data-i18n="clubs.leave">Напусни клуба</span>
                         </button>
                     </form>
@@ -141,7 +141,7 @@
             </div>
             <div class="card-body p-0">
                 <ul class="list-group list-group-flush">
-                    @foreach (var member in Model.Club.Members.OrderByDescending(m => m.Role))
+                    @foreach (var member in Model.Club.Members.Where(m => m.Status == SchoolClubs.Web.Models.MembershipStatus.Active).OrderByDescending(m => m.Role))
                     {
                         <li class="list-group-item d-flex justify-content-between">
                             <a asp-controller="Profile" asp-action="Index" asp-route-id="@member.UserId" class="text-decoration-none">
@@ -160,6 +160,64 @@
                 </ul>
             </div>
         </div>
+
+        @if (Model.IsLeader && Model.PendingRequests.Any())
+        {
+            <div class="card mt-3 border-warning">
+                <div class="card-header bg-warning bg-opacity-10">
+                    <i class="bi bi-hourglass-split"></i> <span data-i18n="clubs.pendingRequests">Очаквани заявки</span> (@Model.PendingRequests.Count)
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var request in Model.PendingRequests)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@request.UserId" class="text-decoration-none fw-500">
+                                            @request.User.FullName
+                                        </a>
+                                        <small class="d-block text-muted">@request.User.Email</small>
+                                    </div>
+                                    <div class="d-flex gap-1">
+                                        <form asp-action="ApproveMember" asp-route-memberId="@request.Id" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-success" data-i18n="clubs.approve">Одобри</button>
+                                        </form>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal_@request.Id" data-i18n="clubs.reject">Отхвърли</button>
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            @foreach (var request in Model.PendingRequests)
+            {
+                <div class="modal fade" id="rejectModal_@request.Id" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" data-i18n="clubs.rejectRequest">Отхвърли заявка</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form asp-action="RejectMember" asp-route-memberId="@request.Id" method="post">
+                                @Html.AntiForgeryToken()
+                                <div class="modal-body">
+                                    <p data-i18n="clubs.rejectReason">Причина (опционално):</p>
+                                    <textarea name="reason" class="form-control" rows="3" placeholder="Напиши причина..."></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="clubs.cancel">Отказ</button>
+                                    <button type="submit" class="btn btn-danger" data-i18n="clubs.rejectBtn">Отхвърли</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
 
         @if (Model.RecentPhotos.Any())
         {
