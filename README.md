@@ -57,10 +57,11 @@
 - Препоръчани клубове
 
 ### Администраторски панел
-- Общи статистики (потребители, клубове, събития, обяви, обратна връзка)
-- Управление на клубове (активиране/деактивиране, изтриване)
-- Управление на потребителски роли
-- Преглед и разрешаване на обратна връзка
+- Обща табло със статистики (потребители, клубове, събития, обяви, обратна връзка)
+- Управление на клубове (активиране/деактивиране, изтриване) - отделна страница
+- Управление на потребителски роли - отделна страница
+- Управление и разрешаване на обратна връзка - отделна страница
+- Преглед на категории на обратна връзка
 
 ### Профил
 - Преглед на профил с клубове, награди и точки
@@ -158,6 +159,33 @@ dotnet run --project SchoolClubs.Web
 
 Приложението е достъпно на `http://localhost:5000`. Базата данни се създава и засява автоматично при първо стартиране — не са нужни миграции.
 
+## Развръщане (Deployment)
+
+Приложението е готово за развръщане в производство. Съществуват няколко опции:
+
+### Docker (препоръчано)
+```bash
+docker-compose up -d
+```
+Вижте подробното [DEPLOYMENT.md](./DEPLOYMENT.md) за конфигурация и опции.
+
+### IIS (Windows Server)
+Вижте [DEPLOYMENT.md](./DEPLOYMENT.md) за пълни инструкции.
+
+### Linux (Nginx)
+Вижте [DEPLOYMENT.md](./DEPLOYMENT.md) за пълна конфигурация със systemd услуга.
+
+## Нови функции в този выпуск
+
+✅ Одобрение на членство на клуб (Membership Approval)
+✅ Валидация на дати на события (Prevent Past Events)
+✅ Управление на роли на администратор със свежаване на сесия
+✅ Отделни страници за управление (Users, Clubs, Feedbacks)
+✅ Категории в обратна връзка (Feedback Categories)
+✅ Docker и Docker Compose поддръжка
+✅ GitHub Actions CI/CD pipeline
+✅ Документация за развръщане
+
 ## Тестови акаунти
 
 | Роля | Email | Парола |
@@ -169,17 +197,18 @@ dotnet run --project SchoolClubs.Web
 | Student | elena.stoyanova@school.bg | Student123! |
 | Student | nikolay.kolev@school.bg | Student123! |
 
-### Тестове
+## Тестове
 ```bash
 dotnet test
 ```
-14 теста (5 Achievement + 5 Recommendation + 4 Controller).
+43 теста (5 Achievement + 5 Recommendation + 4 Controller + 29 Integration) - всички преминават успешно ✅
 
 ## Тестови акаунти
 
 | Имейл | Парола | Роля |
 |-------|--------|------|
 | admin@schoolclubs.bg | Admin123! | Admin |
+| teacher@schoolclubs.bg | Teacher123! | Teacher |
 | ivan.petrov@school.bg | Student123! | Student |
 | maria.ivanova@school.bg | Student123! | Student |
 | georgi.dimitrov@school.bg | Student123! | Student |
@@ -193,15 +222,9 @@ dotnet test
 2. Уверете се, че .NET 8.0 SDK и SQL Server LocalDB са инсталирани
 3. Стартирайте с `dotnet run --project SchoolClubs.Web`
 4. Базата данни се създава и засява автоматично
-dotnet restore
-dotnet ef database update
-dotnet run
-```
 
-## Тестови акаунти
+## Документация
 
-| Email | Парола | Роля |
-|-------|--------|------|
-| admin@schoolclubs.bg | Admin123! | Admin |
-| ivan.petrov@school.bg | Student123! | Student |
-| maria.ivanova@school.bg | Student123! | Student |
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Пълно ръководство за развръщане
+- [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Резюме на всички решени проблеми
+- [Leaderboard_Criteria_BG.md](./Leaderboard_Criteria_BG.md) - Система за класация и точки
