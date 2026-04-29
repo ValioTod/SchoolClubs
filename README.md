@@ -225,6 +225,31 @@ dotnet test
 
 ## Документация
 
-- [DEPLOYMENT.md](./DEPLOYMENT.md) - Пълно ръководство за развръщане
+- **🚀 [AZURE_QUICKSTART.md](./AZURE_QUICKSTART.md)** - Deploy в 5 минути (препоръчано!)
+- **[AZURE_DEPLOYMENT.md](./AZURE_DEPLOYMENT.md)** - Детално ръководство за Azure App Service
+- **[AZURE_DEPLOYMENT_CHECKLIST.md](./AZURE_DEPLOYMENT_CHECKLIST.md)** - Контролен списък за развръщане
+- [DEPLOYMENT.md](./DEPLOYMENT.md) - Пълно ръководство за всички опции (Docker, IIS, Linux)
 - [IMPLEMENTATION_SUMMARY.md](./IMPLEMENTATION_SUMMARY.md) - Резюме на всички решени проблеми
 - [Leaderboard_Criteria_BG.md](./Leaderboard_Criteria_BG.md) - Система за класация и точки
+
+## Развръщане (Deployment)
+
+**Препоръчано**: Развържете в **Azure** за 5 минути! 
+
+```powershell
+# 1. Автоматична настройка на Azure ресурси
+.\scripts\azure-setup.ps1
+
+# 2. Публикуване на приложението
+dotnet publish SchoolClubs.Web -c Release -o ./publish
+
+# 3. Развръщане в Azure
+az webapp up --resource-group schoolclubs-rg --name schoolclubs-app --runtime DOTNETCORE:8.0
+
+# 4. Отворете в браузър
+# https://schoolclubs-app.azurewebsites.net
+```
+
+👉 **[Пълна инструкция →](./AZURE_QUICKSTART.md)**
+
+Други опции: Docker, IIS, Linux - вижте [DEPLOYMENT.md](./DEPLOYMENT.md)
